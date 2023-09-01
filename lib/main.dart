@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:sound_storm/Components/Mp3FilePicker.dart';
-import 'package:sound_storm/Models/Connector.dart';
+import 'package:sound_storm/RouteGenerator.dart';
+import 'package:sound_storm/Screens/Home.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
 
   // This widget is the root of your application.
   @override
@@ -16,17 +16,11 @@ class MyApp extends StatelessWidget {
       title: 'Sound Storm',
       theme: ThemeData(
         
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
         useMaterial3: true,
       ),
-      home:Scaffold(
-        appBar: AppBar(
-          title: Text('Sound Storm'),
-        ),
-        body: Center(
-          child: Mp3FilePicker(),
-        ),
-      )
+      home:Home(),
+      onGenerateRoute: RouteGenerator.generateRoute,
       );
     
   }
