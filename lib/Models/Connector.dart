@@ -12,7 +12,6 @@ String localUrl = "http://192.168.77.1/AudioSaver";
 
 class Connector {
   static Future<List<Song>> getSongList() async {
-    baseUrl = localUrl;
     var response = await http.get(Uri.parse('$baseUrl/getFiles.php'));
     if (response.statusCode == 200) {
       var json = jsonDecode(response.body);
@@ -27,8 +26,7 @@ class Connector {
   }
 
   static Future<String?> uploadFile(
-      PlatformFile Audio, PlatformFile Image, String Titolo) async {
-    baseUrl = localUrl;
+    PlatformFile Audio, PlatformFile Image, String Titolo) async {
     File file = File(Audio.path!);
     File Imagefile = File(Image.path!);
     var request = http.MultipartRequest(
