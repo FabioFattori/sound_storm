@@ -9,6 +9,7 @@ class CustomContainer extends StatelessWidget {
     return Padding(
         padding: const EdgeInsets.all(14),
         child: Container(
+            clipBehavior: Clip.antiAliasWithSaveLayer,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(31),
                 color: const Color.fromRGBO(61, 61, 61, 1)),

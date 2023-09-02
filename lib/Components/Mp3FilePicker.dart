@@ -1,16 +1,23 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:sound_storm/Models/Connector.dart';
-import 'dart:io';
+import 'package:sound_storm/functions/showOverlay.dart';
 
 class Mp3FilePicker extends StatefulWidget {
+  Mp3FilePicker({super.key, required this.image, required this.titolo});
+
+  final PlatformFile? image;
+  late String titolo;
   @override
   _Mp3FilePickerState createState() => _Mp3FilePickerState();
 }
 
 class _Mp3FilePickerState extends State<Mp3FilePicker> {
   PlatformFile file = PlatformFile(name: '', path: '', size: 0);
-  String? result;
+  String? result = "";
 
   Future<void> _pickMp3File() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -30,20 +37,49 @@ class _Mp3FilePickerState extends State<Mp3FilePicker> {
     return Column(
       children: <Widget>[
         ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.resolveWith(
+                (states) => const Color.fromRGBO(50, 123, 234, 1)),
+          ),
           onPressed: _pickMp3File,
-          child: Text('Seleziona file .mp3'),
+          child: const Text('Seleziona file .mp3',
+              style: TextStyle(color: Colors.white)),
         ),
-        SizedBox(height: 10),
-        file.name == '' ? Text('Nessun file selezionato') : Text(file.name),
-        ElevatedButton(
-            onPressed: () async {
-              var res=await Connector.uploadFile(file);
-              setState(() {
-                result = "${res!.split(".")[0]}.";
-              });
-            },
-            child: Text('Upload')),
-            result==null?Text(''):Text(result!),
+        const SizedBox(height: 10),
+        file.name == ''
+            ? const Text(
+                'Nessun file selezionato',
+                style: TextStyle(color: Colors.white),
+              )
+            : Text(file.name, style: const TextStyle(color: Colors.white)),
+        Padding(
+          padding: const EdgeInsets.only(top:16),
+          child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.resolveWith(
+                    (states) => const Color.fromRGBO(50, 123, 234, 1)),
+              ),
+              onPressed: () async {
+                WidgetsBinding.instance!.addPostFrameCallback((_) {
+                  showOverlay(context);
+                });
+                await Connector.uploadFile(file, widget.image!, widget.titolo)
+                    .then((value) => {
+                          setState(() {
+                            result = "${value!.split(".")[0]}.";
+                          }),
+                          hideOverlay(),
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(result!),
+                              duration: const Duration(seconds: 2),
+                            ),
+                          )
+                        });
+              },
+              child: const Text('Crea Canzone',
+                  style: TextStyle(color: Colors.white))),
+        )
       ],
     );
   }
