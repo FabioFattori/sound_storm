@@ -10,7 +10,7 @@ import 'package:sound_storm/Components/Mp3FilePicker.dart';
 // ignore: must_be_immutable
 class Upload extends StatefulWidget {
   Upload({super.key});
-  late PlatformFile? image;
+  late PlatformFile? image = null;
   bool show = true;
   TextEditingController controller = TextEditingController();
   @override

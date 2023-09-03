@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class Song {
-  String baseUrl = "https://understated-throttl.000webhostapp.com";
+  String baseUrl = "https://understated-throttl.000webhostapp.com/";
 
   String localUrl = "http://192.168.77.1/AudioSaver/";
   String title;
@@ -19,15 +19,15 @@ class Song {
         title: json['title'], urlToMp3: json['song'], urlToImage: json['img']);
   }
 
-  Future<File> getMp3File()async {
-    String url = '$localUrl$urlToMp3';
+  Future<File> getMp3File() async {
+    String url = '$baseUrl$urlToMp3';
     final file = await DefaultCacheManager().getSingleFile(url);
 
     return file;
   }
 
-   getImageFile() async {
-    String url = '$localUrl$urlToImage';
+  getImageFile() async {
+    String url = '$baseUrl$urlToImage';
     final file = await DefaultCacheManager().getSingleFile(url);
 
     return file;
