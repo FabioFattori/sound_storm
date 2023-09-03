@@ -1,9 +1,12 @@
+// ignore_for_file: file_names
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:sound_storm/Components/CustonContainer.dart';
 import 'package:sound_storm/Models/Song.dart';
 
+// ignore: must_be_immutable
 class SongRowVisual extends StatefulWidget {
   SongRowVisual({super.key, required this.song});
 
@@ -49,10 +52,10 @@ class _SongRowVisualState extends State<SongRowVisual> {
                 height: 100,
               ),
         Padding(
-          padding: EdgeInsets.all(8),
+          padding:const EdgeInsets.all(8),
           child: Text(
             widget.song.title,
-            style: TextStyle(color: Colors.white, fontSize: 20),
+            style:const TextStyle(color: Colors.white, fontSize: 20),
           ),
         )
       ],

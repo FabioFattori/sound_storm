@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -5,9 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:sound_storm/Components/CustonContainer.dart';
 import 'package:sound_storm/Components/Mp3FilePicker.dart';
 
+// ignore: must_be_immutable
 class Upload extends StatefulWidget {
   Upload({super.key});
-  late PlatformFile? image = null;
+  late PlatformFile? image;
   bool show = true;
   TextEditingController controller = TextEditingController();
   @override
@@ -41,7 +44,7 @@ class _UploadState extends State<Upload> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
+                      SizedBox(
                         width: 300,
                         child: TextField(
                           controller: widget.controller,

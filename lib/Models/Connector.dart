@@ -1,7 +1,11 @@
+
+// ignore_for_file: file_names
+
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
+// ignore: depend_on_referenced_packages
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 import 'package:sound_storm/Models/Song.dart';
@@ -26,16 +30,16 @@ class Connector {
   }
 
   static Future<String?> uploadFile(
-    PlatformFile Audio, PlatformFile Image, String Titolo) async {
-    File file = File(Audio.path!);
-    File Imagefile = File(Image.path!);
+    PlatformFile audio, PlatformFile image, String titolo) async {
+    File file = File(audio.path!);
+    File imageFile = File(image.path!);
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse('$baseUrl/uploadAudio.php?Titolo=$Titolo'),
+      Uri.parse('$baseUrl/uploadAudio.php?Titolo=$titolo'),
     );
 
     var mimeType = lookupMimeType(file.path);
-    var ImageType = lookupMimeType(Imagefile.path);
+    var imageType = lookupMimeType(imageFile.path);
 
     if (mimeType == 'audio/mpeg' || mimeType == 'audio/mp3') {
       var multipartFile = http.MultipartFile(
@@ -43,21 +47,21 @@ class Connector {
         File(file.path).readAsBytes().asStream(),
         File(file.path).lengthSync(),
         //get the name of the file
-        filename: Audio.name,
+        filename: audio.name,
         contentType: MediaType.parse(mimeType!),
       );
 
-      var ImageToSend = http.MultipartFile(
+      var imageToSend = http.MultipartFile(
         'Image',
-        File(Imagefile.path!).readAsBytes().asStream(),
-        File(Imagefile.path!).lengthSync(),
+        File(imageFile.path).readAsBytes().asStream(),
+        File(imageFile.path).lengthSync(),
         //get the name of the file
-        filename: Image.name,
-        contentType: MediaType.parse(ImageType!),
+        filename: image.name,
+        contentType: MediaType.parse(imageType!),
       );
 
       request.files.add(multipartFile);
-      request.files.add(ImageToSend);
+      request.files.add(imageToSend);
 
       var response = await request.send();
 

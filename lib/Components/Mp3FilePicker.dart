@@ -1,5 +1,4 @@
-import 'dart:io';
-import 'dart:math';
+// ignore_for_file: must_be_immutable, library_private_types_in_public_api, file_names
 
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -60,7 +59,7 @@ class _Mp3FilePickerState extends State<Mp3FilePicker> {
                     (states) => const Color.fromRGBO(50, 123, 234, 1)),
               ),
               onPressed: () async {
-                WidgetsBinding.instance!.addPostFrameCallback((_) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
                   showOverlay(context);
                 });
                 await Connector.uploadFile(file, widget.image!, widget.titolo)

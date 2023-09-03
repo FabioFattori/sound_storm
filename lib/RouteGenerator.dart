@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:sound_storm/Screens/Home.dart';
 import 'package:sound_storm/Screens/Upload.dart';
@@ -17,6 +19,7 @@ class RouteGenerator {
   }
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
+    // ignore: unused_local_variable
     final args = settings.arguments;
 
     switch (settings.name) {

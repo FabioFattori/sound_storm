@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:sound_storm/Components/CustonContainer.dart';
 import 'package:sound_storm/Components/RouteButton.dart';
@@ -6,6 +8,7 @@ import 'package:sound_storm/Components/SongRowVisual.dart';
 import 'package:sound_storm/Models/Connector.dart';
 import 'package:sound_storm/Models/Song.dart';
 
+// ignore: must_be_immutable
 class Home extends StatefulWidget {
   Home({super.key});
 
