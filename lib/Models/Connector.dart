@@ -2,6 +2,7 @@
 // ignore_for_file: file_names
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
@@ -30,16 +31,38 @@ class Connector {
   }
 
   static Future<String?> uploadFile(
-    PlatformFile audio, PlatformFile image, String titolo) async {
-    File file = File(audio.path!);
-    File imageFile = File(image.path!);
-    var request = http.MultipartRequest(
+    PlatformFile audio, PlatformFile? image, String titolo) async {
+      var request = http.MultipartRequest(
       'POST',
       Uri.parse('$baseUrl/uploadAudio.php?Titolo=$titolo'),
     );
 
-    var mimeType = lookupMimeType(file.path);
+    
+    if(image!=null){
+      File imageFile = File(image!.path!);
     var imageType = lookupMimeType(imageFile.path);
+
+      var imageToSend = http.MultipartFile(
+        'Image',
+        File(imageFile.path).readAsBytes().asStream(),
+        File(imageFile.path).lengthSync(),
+        //get the name of the file
+        filename: image.name,
+        contentType: MediaType.parse(imageType!),
+      );
+      
+      request.files.add(imageToSend);
+    }else{
+      request.files.add(http.MultipartFile.fromString('Image',
+        ''
+      
+      ));
+    }
+       
+    File file = File(audio.path!);
+    
+    var mimeType = lookupMimeType(file.path);
+
 
     if (mimeType == 'audio/mpeg' || mimeType == 'audio/mp3') {
       var multipartFile = http.MultipartFile(
@@ -51,17 +74,7 @@ class Connector {
         contentType: MediaType.parse(mimeType!),
       );
 
-      var imageToSend = http.MultipartFile(
-        'Image',
-        File(imageFile.path).readAsBytes().asStream(),
-        File(imageFile.path).lengthSync(),
-        //get the name of the file
-        filename: image.name,
-        contentType: MediaType.parse(imageType!),
-      );
-
       request.files.add(multipartFile);
-      request.files.add(imageToSend);
 
       var response = await request.send();
 

@@ -1,6 +1,9 @@
 // ignore_for_file: file_names
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:sound_storm/Components/BottomBar.dart';
 import 'package:sound_storm/Components/CustonContainer.dart';
 import 'package:sound_storm/Components/RouteButton.dart';
 import 'package:sound_storm/Components/Skeleton.dart';
@@ -10,7 +13,13 @@ import 'package:sound_storm/Models/Song.dart';
 
 // ignore: must_be_immutable
 class Home extends StatefulWidget {
-  Home({super.key});
+  Home({super.key,required this.playSong,required this.pauseSong,required this.resumeSong,required this.isPlaying,required this.setSong,required this.currentSong});
+  late bool isPlaying;
+  late Function playSong ;
+  late Function pauseSong ;
+  late Function resumeSong ;
+  late Function setSong ;
+  late Song currentSong;
 
   final TextEditingController _controller = TextEditingController();
   List<Song> get filteredSongs {
@@ -60,6 +69,8 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     getSongs();
+    Timer.periodic(const Duration(seconds: 60), (Timer t) => getSongs());
+    
   }
 
   @override
@@ -98,6 +109,7 @@ class _HomeState extends State<Home> {
                       })
                     }
                 },
+                
                 decoration: const InputDecoration(
                   hintText: 'Cerca...',
                   hintStyle: TextStyle(color: Colors.white),
@@ -120,7 +132,9 @@ class _HomeState extends State<Home> {
                               itemCount: widget.filteredSongs.length,
                               itemBuilder: (context, index) {
                                 return SongRowVisual(
-                                    song: widget.filteredSongs[index]);
+                                    playSong: widget.playSong,
+                                    pauseSong: widget.pauseSong,
+                                    song: widget.filteredSongs[index],setSong: widget.setSong,);
                               })
                           : ListView.builder(
                               shrinkWrap: true,
@@ -159,6 +173,7 @@ class _HomeState extends State<Home> {
                 )
         ],
       ),
+      bottomNavigationBar: BottomBar(playSong: widget.resumeSong,pauseSong: widget.pauseSong,isPlaying: widget.isPlaying,currentSong: widget.currentSong,),
     );
   }
 }
