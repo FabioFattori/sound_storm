@@ -52,11 +52,6 @@ class Connector {
       );
       
       request.files.add(imageToSend);
-    }else{
-      request.files.add(http.MultipartFile.fromString('Image',
-        ''
-      
-      ));
     }
        
     File file = File(audio.path!);

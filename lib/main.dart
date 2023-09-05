@@ -1,5 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:sound_storm/Models/Connector.dart';
 import 'package:sound_storm/Models/Song.dart';
 import 'package:sound_storm/RouteGenerator.dart';
 import 'package:sound_storm/Screens/Home.dart';
@@ -11,6 +12,7 @@ void main() {
 class MyApp extends StatefulWidget {
   MyApp({super.key});
   var player;
+  List<Song> songs = [];
   bool isPlaying = false;
   Song currentSong = Song.noSong();
 
@@ -47,10 +49,24 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  Future<Duration?> getDuration(UrlSource url) async {
+    return widget.player.getDuration();
+  }
+
+  void getSongs() async {
+    dynamic appoggio = await Connector.getSongList();
+    setState(() {
+      widget.songs = appoggio;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    getSongs();
     widget.player = AudioPlayer();
+    
+    
   }
 
   @override
@@ -68,6 +84,8 @@ class _MyAppState extends State<MyApp> {
         isPlaying: widget.isPlaying,
         setSong: (value) => setSong(value),
         currentSong: widget.currentSong,
+        songs: widget.songs,
+        getDuration: (value) => getDuration(value),
       ),
       onGenerateRoute: RouteGenerator.generateRoute,
     );

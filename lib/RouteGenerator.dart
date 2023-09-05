@@ -35,7 +35,7 @@ class RouteGenerator {
           },isPlaying: false,
           setSong: (song)=>{
             print("song to set ${song.title}")
-          },currentSong: Song.noSong()));
+          },currentSong: Song.noSong(),getDuration: ()=>{print("get duration")},));
         
 
 

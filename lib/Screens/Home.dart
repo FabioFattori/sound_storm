@@ -13,12 +13,13 @@ import 'package:sound_storm/Models/Song.dart';
 
 // ignore: must_be_immutable
 class Home extends StatefulWidget {
-  Home({super.key,required this.playSong,required this.pauseSong,required this.resumeSong,required this.isPlaying,required this.setSong,required this.currentSong});
+  Home({super.key,required this.playSong,required this.getDuration,required this.pauseSong,required this.resumeSong,required this.isPlaying,required this.setSong,required this.currentSong,this.songs=const []});
   late bool isPlaying;
   late Function playSong ;
   late Function pauseSong ;
   late Function resumeSong ;
   late Function setSong ;
+  late Function getDuration;
   late Song currentSong;
 
   final TextEditingController _controller = TextEditingController();
@@ -35,7 +36,7 @@ class Home extends StatefulWidget {
   }
 
   bool isSearching = false;
-  List<Song> songs = [];
+  List<Song> songs;
   @override
   State<Home> createState() => _HomeState();
 }
@@ -68,8 +69,10 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    getSongs();
-    Timer.periodic(const Duration(seconds: 60), (Timer t) => getSongs());
+    if(widget.songs.isEmpty){
+      getSongs();
+    }
+    //Timer.periodic(const Duration(seconds: 30), (Timer t) => getSongs());
     
   }
 
@@ -173,7 +176,7 @@ class _HomeState extends State<Home> {
                 )
         ],
       ),
-      bottomNavigationBar: BottomBar(playSong: widget.resumeSong,pauseSong: widget.pauseSong,isPlaying: widget.isPlaying,currentSong: widget.currentSong,),
+      bottomNavigationBar: BottomBar(playSong: widget.resumeSong,pauseSong: widget.pauseSong,isPlaying: widget.isPlaying,currentSong: widget.currentSong,getDuration: widget.getDuration,),
     );
   }
 }

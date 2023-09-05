@@ -27,7 +27,7 @@ class SongRowVisual extends StatefulWidget {
 
 class _SongRowVisualState extends State<SongRowVisual> {
   void getImage() async {
-    File appoggio = await widget.song.getImageFile();
+    File? appoggio = await widget.song.getImageFile();
     setState(() {
       widget.image = appoggio;
     });
@@ -74,7 +74,7 @@ class _SongRowVisualState extends State<SongRowVisual> {
           ),
         ),
         Container(
-          margin: EdgeInsets.only(left: 120),
+          margin:const EdgeInsets.only(left: 110),
           child: IconButton(
               onPressed: () async {
                 if (widget.clicked) {
@@ -93,8 +93,9 @@ class _SongRowVisualState extends State<SongRowVisual> {
                   ? const Icon(
                       Icons.pause,
                       color: Colors.white,
+                      size: 50,
                     )
-                  : const Icon(Icons.play_arrow, color: Colors.white)),
+                  : const Icon(Icons.play_arrow, color: Colors.white,size: 50,)),
         )
       ],
     ));
