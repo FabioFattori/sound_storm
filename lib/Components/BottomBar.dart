@@ -19,7 +19,7 @@ class BottomBar extends StatefulWidget {
   late Song currentSong;
   late double currentDuration = 3;
   late double totalDuration = 0;
-  
+
   @override
   State<BottomBar> createState() => _BottomBarState();
 }
@@ -27,7 +27,8 @@ class BottomBar extends StatefulWidget {
 class _BottomBarState extends State<BottomBar> {
   Future<double> setDuration() async {
     Duration? dur =
-        await widget.getDuration(UrlSource(widget.currentSong.urlToMp3));
+        await widget.getDuration(UrlSource(widget.currentSong.urlToMp3)) ??
+            const Duration(seconds: 200);
     setState(() {
       widget.totalDuration = dur!.inSeconds.toDouble() / 60;
     });
@@ -38,9 +39,12 @@ class _BottomBarState extends State<BottomBar> {
   void initState() {
     super.initState();
     Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (widget.currentSong.title != ""&&widget.currentSong.urlToMp3 != " "&&widget.currentSong.urlToImage != "") {
+      if (widget.currentSong.title != "" &&
+          widget.currentSong.urlToMp3 != " " &&
+          widget.currentSong.urlToImage != "") {
         setState(() {
-          if (widget.isPlaying&&widget.currentDuration<widget.totalDuration) {
+          if (widget.isPlaying &&
+              widget.currentDuration < widget.totalDuration) {
             widget.currentDuration += 0.01;
           }
         });
@@ -94,34 +98,34 @@ class _BottomBarState extends State<BottomBar> {
               ),
             ],
           ),
-          FutureBuilder(
-              future: setDuration(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Slider(
-                    label: widget.currentDuration.toString(),
-                    min: 0,
-                    max: snapshot.data as double,
-                    value: widget.currentDuration,
-                    onChanged: (double value) {
-                      setState(() {
-                        widget.currentDuration = value;
-                      });
-                    },
-                    activeColor: Colors.white,
-                    inactiveColor: Colors.grey,
-                  );
-                } else {
-                  return Slider(
-                    min: 0,
-                    max: 0,
-                    value: 0,
-                    onChanged: (double value) {},
-                    activeColor: Colors.white,
-                    inactiveColor: Colors.grey,
-                  );
-                }
-              }),
+          // FutureBuilder(
+          //     future: setDuration(),
+          //     builder: (context, snapshot) {
+          //       if (snapshot.hasData) {
+          //         return Slider(
+          //           label: widget.currentDuration.toString(),
+          //           min: 0,
+          //           max: snapshot.data as double,
+          //           value: widget.currentDuration,
+          //           onChanged: (double value) {
+          //             setState(() {
+          //               widget.currentDuration = value;
+          //             });
+          //           },
+          //           activeColor: Colors.white,
+          //           inactiveColor: Colors.grey,
+          //         );
+          //       } else {
+          //         return Slider(
+          //           min: 0,
+          //           max: 0,
+          //           value: 0,
+          //           onChanged: (double value) {},
+          //           activeColor: Colors.white,
+          //           inactiveColor: Colors.grey,
+          //         );
+          //       }
+          //     }),
           IconButton(
               onPressed: () {
                 if (widget.currentSong != Song.noSong()) {

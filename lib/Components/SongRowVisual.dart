@@ -13,7 +13,8 @@ class SongRowVisual extends StatefulWidget {
       {super.key,
       required this.song,
       required this.playSong,
-      required this.pauseSong,required this.setSong});
+      required this.pauseSong,
+      required this.setSong});
   Function playSong;
   Function pauseSong;
   Function setSong;
@@ -74,7 +75,7 @@ class _SongRowVisualState extends State<SongRowVisual> {
           ),
         ),
         Container(
-          margin:const EdgeInsets.only(left: 110),
+          margin: const EdgeInsets.only(left: 110),
           child: IconButton(
               onPressed: () async {
                 if (widget.clicked) {
@@ -82,8 +83,8 @@ class _SongRowVisualState extends State<SongRowVisual> {
                 } else {
                   await widget.song
                       .getMp3File()
-                      .then((value) => widget.playSong(UrlSource(value)));
-                      widget.setSong(widget.song);
+                      .then((value) => widget.playSong(value));
+                  widget.setSong(widget.song);
                 }
                 setState(() {
                   widget.clicked = !widget.clicked;
@@ -95,7 +96,11 @@ class _SongRowVisualState extends State<SongRowVisual> {
                       color: Colors.white,
                       size: 50,
                     )
-                  : const Icon(Icons.play_arrow, color: Colors.white,size: 50,)),
+                  : const Icon(
+                      Icons.play_arrow,
+                      color: Colors.white,
+                      size: 50,
+                    )),
         )
       ],
     ));

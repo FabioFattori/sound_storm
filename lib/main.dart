@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:sound_storm/Models/Connector.dart';
@@ -7,6 +9,23 @@ import 'package:sound_storm/Screens/Home.dart';
 
 void main() {
   runApp(MyApp());
+  const AudioContext audioContext = AudioContext(
+    iOS: AudioContextIOS(
+      category: AVAudioSessionCategory.ambient,
+      options: [
+        AVAudioSessionOptions.defaultToSpeaker,
+        AVAudioSessionOptions.mixWithOthers,
+      ],
+    ),
+    android: AudioContextAndroid(
+      isSpeakerphoneOn: true,
+      stayAwake: true,
+      contentType: AndroidContentType.sonification,
+      usageType: AndroidUsageType.assistanceSonification,
+      audioFocus: AndroidAudioFocus.none,
+    ),
+  );
+  AudioPlayer.global.setGlobalAudioContext(audioContext);
 }
 
 class MyApp extends StatefulWidget {
@@ -21,9 +40,16 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  void playSong(UrlSource url) async {
-    await widget.player.play(url);
+  void playSong(String url) async {
+    if (Platform.isIOS) {
+      await widget.player.play(DeviceFileSource(File(url).path));
+    } else {
+      widget.player.setSourceUrl(url);
+      await widget.player.resume();
+    }
 
+    print("audio is playng");
+    print((await widget.player.getDuration()).toString());
     setState(() {
       widget.isPlaying = true;
     });
@@ -65,8 +91,6 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     getSongs();
     widget.player = AudioPlayer();
-    
-    
   }
 
   @override
