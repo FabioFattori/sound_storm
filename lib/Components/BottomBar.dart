@@ -11,14 +11,16 @@ class BottomBar extends StatefulWidget {
       required this.pauseSong,
       required this.isPlaying,
       required this.currentSong,
-      required this.getDuration});
+      required this.getDuration,
+      required this.setDurationSong});
   late bool isPlaying;
   Function getDuration;
   late Function playSong;
   late Function pauseSong;
   late Song currentSong;
-  late double currentDuration = 3;
+  late double currentDuration = 0;
   late double totalDuration = 0;
+  late Function setDurationSong;
 
   @override
   State<BottomBar> createState() => _BottomBarState();
@@ -94,38 +96,44 @@ class _BottomBarState extends State<BottomBar> {
                         style:
                             const TextStyle(color: Colors.white, fontSize: 20),
                       )),
+                  FutureBuilder(
+                      future: setDuration(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Slider(
+                            label: widget.currentDuration.toString(),
+                            min: 0,
+                            max: snapshot.data as double == 0
+                                ? 1
+                                : snapshot.data as double,
+                            value: widget.currentDuration,
+                            onChanged: (double value) {
+                              setState(() {
+                                widget.currentDuration = value;
+                              });
+                              widget.setDurationSong(Duration(
+                                  minutes: value.toInt(),
+                                  seconds:
+                                      ((value - value.toInt()) * 60).toInt()));
+                            },
+                            activeColor: Colors.white,
+                            inactiveColor: Colors.grey,
+                          );
+                        } else {
+                          return Slider(
+                            min: 0,
+                            max: 0,
+                            value: 0,
+                            onChanged: (double value) {},
+                            activeColor: Colors.white,
+                            inactiveColor: Colors.grey,
+                          );
+                        }
+                      }),
                 ],
               ),
             ],
           ),
-          // FutureBuilder(
-          //     future: setDuration(),
-          //     builder: (context, snapshot) {
-          //       if (snapshot.hasData) {
-          //         return Slider(
-          //           label: widget.currentDuration.toString(),
-          //           min: 0,
-          //           max: snapshot.data as double,
-          //           value: widget.currentDuration,
-          //           onChanged: (double value) {
-          //             setState(() {
-          //               widget.currentDuration = value;
-          //             });
-          //           },
-          //           activeColor: Colors.white,
-          //           inactiveColor: Colors.grey,
-          //         );
-          //       } else {
-          //         return Slider(
-          //           min: 0,
-          //           max: 0,
-          //           value: 0,
-          //           onChanged: (double value) {},
-          //           activeColor: Colors.white,
-          //           inactiveColor: Colors.grey,
-          //         );
-          //       }
-          //     }),
           IconButton(
               onPressed: () {
                 if (widget.currentSong != Song.noSong()) {

@@ -67,15 +67,18 @@ class _SongRowVisualState extends State<SongRowVisual> {
                   ),
           ),
         ),
-        Padding(
+        SizedBox(
+          width: 125,
+          child: Padding(
           padding: const EdgeInsets.all(8),
           child: Text(
             widget.song.title,
             style: const TextStyle(color: Colors.white, fontSize: 20),
           ),
         ),
+        ),
         Container(
-          margin: const EdgeInsets.only(left: 110),
+          margin: const EdgeInsets.only(left: 40),
           child: IconButton(
               onPressed: () async {
                 if (widget.clicked) {
@@ -86,20 +89,22 @@ class _SongRowVisualState extends State<SongRowVisual> {
                       .then((value) => widget.playSong(value));
                   widget.setSong(widget.song);
                 }
-                setState(() {
-                  widget.clicked = !widget.clicked;
-                });
+                if (mounted) {
+                  setState(() {
+                    widget.clicked = !widget.clicked;
+                  });
+                }
               },
               icon: widget.clicked
                   ? const Icon(
                       Icons.pause,
                       color: Colors.white,
-                      size: 50,
+                      size: 35,
                     )
                   : const Icon(
                       Icons.play_arrow,
                       color: Colors.white,
-                      size: 50,
+                      size: 35,
                     )),
         )
       ],

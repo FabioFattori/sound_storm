@@ -1,4 +1,3 @@
-
 // ignore_for_file: file_names
 
 import 'package:file_picker/file_picker.dart';
@@ -17,30 +16,34 @@ String localUrl = "http://192.168.77.1/AudioSaver";
 
 class Connector {
   static Future<List<Song>> getSongList() async {
-    var response = await http.get(Uri.parse('$baseUrl/getFiles.php'));
-    if (response.statusCode == 200) {
-      var json = jsonDecode(response.body);
-      List<Song> songs = [];
-      for (var element in json) {
-        songs.add(Song.fromJson(element));
+    try {
+      var response = await http.get(Uri.parse('$baseUrl/getFiles.php'));
+      if (response.statusCode == 200) {
+        var json = jsonDecode(response.body);
+        List<Song> songs = [];
+        for (var element in json) {
+          songs.add(Song.fromJson(element));
+        }
+        return songs;
+      } else {
+        return [];
       }
-      return songs;
-    } else {
+    } catch (e) {
+      print(e);
       return [];
     }
   }
 
   static Future<String?> uploadFile(
-    PlatformFile audio, PlatformFile? image, String titolo) async {
-      var request = http.MultipartRequest(
+      PlatformFile audio, PlatformFile? image, String titolo) async {
+    var request = http.MultipartRequest(
       'POST',
       Uri.parse('$baseUrl/uploadAudio.php?Titolo=$titolo'),
     );
 
-    
-    if(image!=null){
+    if (image != null) {
       File imageFile = File(image!.path!);
-    var imageType = lookupMimeType(imageFile.path);
+      var imageType = lookupMimeType(imageFile.path);
 
       var imageToSend = http.MultipartFile(
         'Image',
@@ -50,14 +53,13 @@ class Connector {
         filename: image.name,
         contentType: MediaType.parse(imageType!),
       );
-      
+
       request.files.add(imageToSend);
     }
-       
-    File file = File(audio.path!);
-    
-    var mimeType = lookupMimeType(file.path);
 
+    File file = File(audio.path!);
+
+    var mimeType = lookupMimeType(file.path);
 
     if (mimeType == 'audio/mpeg' || mimeType == 'audio/mp3') {
       var multipartFile = http.MultipartFile(

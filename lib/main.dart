@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:sound_storm/Components/BottomBar.dart';
 import 'package:sound_storm/Models/Connector.dart';
 import 'package:sound_storm/Models/Song.dart';
 import 'package:sound_storm/RouteGenerator.dart';
@@ -41,12 +42,31 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   void playSong(String url) async {
+    if (widget.isPlaying) {
+      await widget.player.stop();
+      setState(() {
+        widget.player = AudioPlayer();
+      });
+    }
     if (Platform.isIOS) {
       await widget.player.play(DeviceFileSource(File(url).path));
     } else {
-      widget.player.setSourceUrl(url);
-      await widget.player.resume();
+      await widget.player.play(UrlSource(url));
     }
+
+    widget.player.onPlayerComplete.listen((_) async {
+      setState(() {
+        widget.isPlaying = false;
+      });
+      if (Platform.isIOS) {
+        await widget.player.play(DeviceFileSource(File(url).path));
+      } else {
+        await widget.player.play(UrlSource(url));
+        setState(() {
+          widget.isPlaying = true;
+        });
+      }
+    });
 
     print("audio is playng");
     print((await widget.player.getDuration()).toString());
@@ -59,6 +79,10 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       widget.currentSong = song;
     });
+  }
+
+  void setTimeSong(Duration duration) async {
+    await widget.player.seek(duration);
   }
 
   void resumeSong() async {
@@ -110,6 +134,7 @@ class _MyAppState extends State<MyApp> {
         currentSong: widget.currentSong,
         songs: widget.songs,
         getDuration: (value) => getDuration(value),
+        setDurationSong: (value) => setTimeSong(value),
       ),
       onGenerateRoute: RouteGenerator.generateRoute,
     );
