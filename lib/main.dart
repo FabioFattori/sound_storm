@@ -1,13 +1,19 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:sound_storm/Components/BottomBar.dart';
 import 'package:sound_storm/Models/Connector.dart';
 import 'package:sound_storm/Models/Song.dart';
 import 'package:sound_storm/RouteGenerator.dart';
 import 'package:sound_storm/Screens/Home.dart';
 
-void main() {
+void main()async {
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
+    androidNotificationChannelName: 'Audio playback',
+    androidNotificationOngoing: true,
+  );
   runApp(MyApp());
 }
 
@@ -25,6 +31,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   void playSong(AudioSource risorsaAudio) async {
+    
     dynamic appoggio = await widget.player.setAudioSource(risorsaAudio);
     await widget.player.play();
 
@@ -87,6 +94,7 @@ class _MyAppState extends State<MyApp> {
         case ProcessingState.ready:
           print("ready");
         case ProcessingState.completed:
+          widget.currentSong.stopTimer();
           print("completed");
       }
     });

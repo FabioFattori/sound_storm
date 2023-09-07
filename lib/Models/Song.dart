@@ -1,9 +1,11 @@
 // ignore_for_file: file_names
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 
 class Song {
   String baseUrl = "https://understated-throttl.000webhostapp.com/";
@@ -13,7 +15,9 @@ class Song {
   String urlToMp3;
   String urlToImage;
   late File? image = null;
-  late AudioSource? urlToMp3Local=null;
+  late AudioSource? urlToMp3Local = null;
+  late Timer timer;
+  double currentDuration = 0;
 
   Song(
       {required this.title, required this.urlToMp3, required this.urlToImage}) {
@@ -33,11 +37,32 @@ class Song {
         title: json['title'], urlToMp3: json['song'], urlToImage: json['img']);
   }
 
+  Future<AudioSource> getMp3FileWithPlaylist(String playlist) async {
+    if (urlToMp3Local == null) {
+      String url = '$baseUrl$urlToMp3';
+      final audioSource = LockCachingAudioSource(Uri.parse(url),
+          tag: MediaItem(
+              id: '1',
+              title: title,
+              album: playlist,
+              artUri: Uri.parse((await getImageFile()).path)));
+
+      urlToMp3Local = audioSource;
+      return audioSource;
+    } else {
+      return urlToMp3Local!;
+    }
+  }
+
   Future<AudioSource> getMp3File() async {
     if (urlToMp3Local == null) {
       String url = '$baseUrl$urlToMp3';
-      final audioSource = LockCachingAudioSource(Uri.parse(url));
-      
+      final audioSource = LockCachingAudioSource(Uri.parse(url),
+          tag: MediaItem(
+              id: '1',
+              title: title,
+              artUri: Uri.parse((await getImageFile()).path)));
+
       urlToMp3Local = audioSource;
       return audioSource;
     } else {
@@ -55,5 +80,17 @@ class Song {
     } else {
       return image;
     }
+  }
+
+  void startTimer(double maxDuration) {
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (title != "" && urlToMp3 != " " && urlToImage != ""&&currentDuration<maxDuration) {
+        currentDuration += 0.0001;
+      }
+    });
+  }
+
+  void stopTimer() {
+    timer.cancel();
   }
 }

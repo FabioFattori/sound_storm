@@ -17,10 +17,9 @@ class BottomBar extends StatefulWidget {
   late Function playSong;
   late Function pauseSong;
   late Song currentSong;
-  late double currentDuration = 0;
   late double totalDuration = 0;
   late Function setDurationSong;
-
+  double currentDuration = 0;
   @override
   State<BottomBar> createState() => _BottomBarState();
 }
@@ -39,14 +38,14 @@ class _BottomBarState extends State<BottomBar> {
   @override
   void initState() {
     super.initState();
-    Timer.periodic(const Duration(seconds: 1), (timer) {
+     Timer.periodic(const Duration(seconds: 1), (timer) {
       if (widget.currentSong.title != "" &&
           widget.currentSong.urlToMp3 != " " &&
           widget.currentSong.urlToImage != "") {
         setState(() {
           if (widget.isPlaying &&
-              widget.currentDuration < widget.totalDuration) {
-            widget.currentDuration += 0.01;
+              widget.currentSong.currentDuration < widget.totalDuration) {
+            widget.currentDuration = widget.currentSong.currentDuration;
           }
         });
       }
@@ -99,8 +98,8 @@ class _BottomBarState extends State<BottomBar> {
                       future: setDuration(),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
+                          widget.currentSong.startTimer(snapshot.data as double);
                           return Slider(
-                            label: widget.currentDuration.toString(),
                             min: 0,
                             max: snapshot.data as double == 0
                                 ? 1
@@ -108,7 +107,7 @@ class _BottomBarState extends State<BottomBar> {
                             value: widget.currentDuration,
                             onChanged: (double value) {
                               setState(() {
-                                widget.currentDuration = value;
+                                widget.currentSong.currentDuration = value;
                               });
                               widget.setDurationSong(Duration(
                                   minutes: value.toInt(),

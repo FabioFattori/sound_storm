@@ -52,5 +52,9 @@
 	</dict>
 	<key>NSMicrophoneUsageDescription</key>
 <string>sound storm desidera avere l'accesso al microfono zio pera</string>
+<key>UIBackgroundModes</key>
+<array>
+	<string>audio</string>
+</array>
 </dict>
 </plist>

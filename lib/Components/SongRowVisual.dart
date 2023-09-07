@@ -83,7 +83,7 @@ class _SongRowVisualState extends State<SongRowVisual> {
                   widget.pauseSong();
                 } else {
                   await widget.song.getMp3File().then((value) =>
-                      {widget.playSong(value), widget.setSong(widget.song)});
+                      {widget.playSong(value), widget.setSong(widget.song),});
                 }
                 if (mounted) {
                   setState(() {
