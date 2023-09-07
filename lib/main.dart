@@ -17,22 +17,19 @@ class MyApp extends StatefulWidget {
   List<Song> songs = [];
   bool isPlaying = false;
   Song currentSong = Song.noSong();
-  late var duration=const Duration(seconds: 200);
+  late var duration = const Duration(seconds: 200);
 
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  
   void playSong(AudioSource risorsaAudio) async {
-    
-    dynamic appoggio=await widget.player.setAudioSource(risorsaAudio);
+    dynamic appoggio = await widget.player.setAudioSource(risorsaAudio);
     await widget.player.play();
-    
+
     setState(() {
-      widget.duration=appoggio;
-      widget.isPlaying = true;
+      widget.duration = appoggio;
     });
   }
 
@@ -47,17 +44,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   void resumeSong() async {
-    await widget.player.resume();
-    setState(() {
-      widget.isPlaying = true;
-    });
+    await widget.player.play();
   }
 
   void pauseSong() async {
     await widget.player.pause();
-    setState(() {
-      widget.isPlaying = false;
-    });
   }
 
   Future<Duration?> getDuration(String url) async {
@@ -76,6 +67,29 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     getSongs();
     widget.player = AudioPlayer();
+    widget.player.playerStateStream.listen((state) {
+      if (state.playing) {
+        setState(() {
+          widget.isPlaying = true;
+        });
+      } else {
+        setState(() {
+          widget.isPlaying = false;
+        });
+      }
+      switch (state.processingState) {
+        case ProcessingState.idle:
+          print("idle");
+        case ProcessingState.loading:
+          print("loading file");
+        case ProcessingState.buffering:
+          print("buffering");
+        case ProcessingState.ready:
+          print("ready");
+        case ProcessingState.completed:
+          print("completed");
+      }
+    });
   }
 
   @override

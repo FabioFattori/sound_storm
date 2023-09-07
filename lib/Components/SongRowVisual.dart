@@ -68,12 +68,12 @@ class _SongRowVisualState extends State<SongRowVisual> {
         SizedBox(
           width: 125,
           child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Text(
-            widget.song.title,
-            style: const TextStyle(color: Colors.white, fontSize: 20),
+            padding: const EdgeInsets.all(8),
+            child: Text(
+              widget.song.title,
+              style: const TextStyle(color: Colors.white, fontSize: 20),
+            ),
           ),
-        ),
         ),
         Container(
           margin: const EdgeInsets.only(left: 40),
@@ -82,10 +82,8 @@ class _SongRowVisualState extends State<SongRowVisual> {
                 if (widget.clicked) {
                   widget.pauseSong();
                 } else {
-                  await widget.song
-                      .getMp3File()
-                      .then((value) => widget.playSong(value));
-                  widget.setSong(widget.song);
+                  await widget.song.getMp3File().then((value) =>
+                      {widget.playSong(value), widget.setSong(widget.song)});
                 }
                 if (mounted) {
                   setState(() {
