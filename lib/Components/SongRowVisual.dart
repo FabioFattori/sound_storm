@@ -1,7 +1,6 @@
 // ignore_for_file: file_names
 
 import 'dart:io';
-import 'package:audioplayers/audioplayers.dart';
 
 import 'package:flutter/material.dart';
 import 'package:sound_storm/Components/CustonContainer.dart';
@@ -18,7 +17,6 @@ class SongRowVisual extends StatefulWidget {
   Function playSong;
   Function pauseSong;
   Function setSong;
-  var player = AudioPlayer();
   bool clicked = false;
   late Song song;
   File? image;

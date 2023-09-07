@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:sound_storm/Models/Song.dart';
 
@@ -29,7 +28,7 @@ class BottomBar extends StatefulWidget {
 class _BottomBarState extends State<BottomBar> {
   Future<double> setDuration() async {
     Duration? dur =
-        await widget.getDuration(UrlSource(widget.currentSong.urlToMp3)) ??
+        await widget.getDuration(widget.currentSong.urlToMp3) ??
             const Duration(seconds: 200);
     setState(() {
       widget.totalDuration = dur!.inSeconds.toDouble() / 60;

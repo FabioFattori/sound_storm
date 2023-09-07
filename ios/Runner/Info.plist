@@ -49,6 +49,8 @@
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
-		</dict>
+	</dict>
+	<key>NSMicrophoneUsageDescription</key>
+<string>sound storm desidera avere l'accesso al microfono zio pera</string>
 </dict>
 </plist>

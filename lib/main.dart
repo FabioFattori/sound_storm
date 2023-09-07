@@ -1,7 +1,6 @@
 import 'dart:io';
-
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:sound_storm/Components/BottomBar.dart';
 import 'package:sound_storm/Models/Connector.dart';
 import 'package:sound_storm/Models/Song.dart';
@@ -10,23 +9,6 @@ import 'package:sound_storm/Screens/Home.dart';
 
 void main() {
   runApp(MyApp());
-  const AudioContext audioContext = AudioContext(
-    iOS: AudioContextIOS(
-      category: AVAudioSessionCategory.ambient,
-      options: [
-        AVAudioSessionOptions.defaultToSpeaker,
-        AVAudioSessionOptions.mixWithOthers,
-      ],
-    ),
-    android: AudioContextAndroid(
-      isSpeakerphoneOn: true,
-      stayAwake: true,
-      contentType: AndroidContentType.sonification,
-      usageType: AndroidUsageType.assistanceSonification,
-      audioFocus: AndroidAudioFocus.none,
-    ),
-  );
-  AudioPlayer.global.setGlobalAudioContext(audioContext);
 }
 
 class MyApp extends StatefulWidget {
@@ -35,42 +17,21 @@ class MyApp extends StatefulWidget {
   List<Song> songs = [];
   bool isPlaying = false;
   Song currentSong = Song.noSong();
+  late var duration=const Duration(seconds: 200);
 
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  void playSong(String url) async {
-    if (widget.isPlaying) {
-      await widget.player.stop();
-      setState(() {
-        widget.player = AudioPlayer();
-      });
-    }
-    if (Platform.isIOS) {
-      await widget.player.play(DeviceFileSource(File(url).path));
-    } else {
-      await widget.player.play(UrlSource(url));
-    }
-
-    widget.player.onPlayerComplete.listen((_) async {
-      setState(() {
-        widget.isPlaying = false;
-      });
-      if (Platform.isIOS) {
-        await widget.player.play(DeviceFileSource(File(url).path));
-      } else {
-        await widget.player.play(UrlSource(url));
-        setState(() {
-          widget.isPlaying = true;
-        });
-      }
-    });
-
-    print("audio is playng");
-    print((await widget.player.getDuration()).toString());
+  
+  void playSong(AudioSource risorsaAudio) async {
+    
+    dynamic appoggio=await widget.player.setAudioSource(risorsaAudio);
+    await widget.player.play();
+    
     setState(() {
+      widget.duration=appoggio;
       widget.isPlaying = true;
     });
   }
@@ -99,8 +60,8 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  Future<Duration?> getDuration(UrlSource url) async {
-    return widget.player.getDuration();
+  Future<Duration?> getDuration(String url) async {
+    return widget.duration;
   }
 
   void getSongs() async {

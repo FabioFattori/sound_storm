@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:just_audio/just_audio.dart';
 
 class Song {
   String baseUrl = "https://understated-throttl.000webhostapp.com/";
@@ -11,12 +12,14 @@ class Song {
   String title;
   String urlToMp3;
   String urlToImage;
-  late File? image;
+  late File? image = null;
+  late AudioSource? urlToMp3Local=null;
 
-  Song({required this.title, required this.urlToMp3, required this.urlToImage}){
-    if(title==""&&urlToMp3==""&&urlToImage==""){
-      image=null;
-    }else{
+  Song(
+      {required this.title, required this.urlToMp3, required this.urlToImage}) {
+    if (title == "" && urlToMp3 == "" && urlToImage == "") {
+      image = null;
+    } else {
       getImageFile();
     }
   }
@@ -30,18 +33,27 @@ class Song {
         title: json['title'], urlToMp3: json['song'], urlToImage: json['img']);
   }
 
-  Future<String> getMp3File() async {
-    String url = '$baseUrl$urlToMp3';
-    final file = await DefaultCacheManager().getSingleFile(url);
-
-    return file.path;
+  Future<AudioSource> getMp3File() async {
+    if (urlToMp3Local == null) {
+      String url = '$baseUrl$urlToMp3';
+      final audioSource = LockCachingAudioSource(Uri.parse(url));
+      
+      urlToMp3Local = audioSource;
+      return audioSource;
+    } else {
+      return urlToMp3Local!;
+    }
   }
 
   getImageFile() async {
-    String url = '$baseUrl$urlToImage';
-    final file = await DefaultCacheManager().getSingleFile(url);
-    image = file;
+    if (image == null) {
+      String url = '$baseUrl$urlToImage';
+      final file = await DefaultCacheManager().getSingleFile(url);
+      image = file;
 
-    return file;
+      return file;
+    } else {
+      return image;
+    }
   }
 }
