@@ -57,11 +57,12 @@ class Song {
   Future<AudioSource> getMp3File() async {
     if (urlToMp3Local == null) {
       String url = '$baseUrl$urlToMp3';
+      Uri uri = Uri.parse('$baseUrl$urlToImage');
       final audioSource = LockCachingAudioSource(Uri.parse(url),
           tag: MediaItem(
               id: '1',
               title: title,
-              artUri: Uri.parse((await getImageFile()).path)));
+              artUri: uri));
 
       urlToMp3Local = audioSource;
       return audioSource;

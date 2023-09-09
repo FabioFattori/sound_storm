@@ -13,12 +13,22 @@ import 'package:sound_storm/Models/Song.dart';
 
 // ignore: must_be_immutable
 class Home extends StatefulWidget {
-  Home({super.key,required this.playSong,required this.setDurationSong ,required this.getDuration,required this.pauseSong,required this.resumeSong,required this.isPlaying,required this.setSong,required this.currentSong,this.songs=const []});
+  Home(
+      {super.key,
+      required this.playSong,
+      required this.setDurationSong,
+      required this.getDuration,
+      required this.pauseSong,
+      required this.resumeSong,
+      required this.isPlaying,
+      required this.setSong,
+      required this.currentSong,
+      this.songs = const []});
   late bool isPlaying;
-  late Function playSong ;
-  late Function pauseSong ;
-  late Function resumeSong ;
-  late Function setSong ;
+  late Function playSong;
+  late Function pauseSong;
+  late Function resumeSong;
+  late Function setSong;
   late Function getDuration;
   late Song currentSong;
   late Function setDurationSong;
@@ -70,9 +80,6 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    if(widget.songs.isEmpty){
-      getSongs();
-    }
     
   }
 
@@ -112,7 +119,6 @@ class _HomeState extends State<Home> {
                       })
                     }
                 },
-                
                 decoration: const InputDecoration(
                   hintText: 'Cerca...',
                   hintStyle: TextStyle(color: Colors.white),
@@ -135,9 +141,11 @@ class _HomeState extends State<Home> {
                               itemCount: widget.filteredSongs.length,
                               itemBuilder: (context, index) {
                                 return SongRowVisual(
-                                    playSong: widget.playSong,
-                                    pauseSong: widget.pauseSong,
-                                    song: widget.filteredSongs[index],setSong: widget.setSong,);
+                                  playSong: widget.playSong,
+                                  pauseSong: widget.pauseSong,
+                                  song: widget.filteredSongs[index],
+                                  setSong: widget.setSong,
+                                );
                               })
                           : ListView.builder(
                               shrinkWrap: true,
@@ -155,7 +163,10 @@ class _HomeState extends State<Home> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         RouteButton(
-                            title: "Playlist", icon: Icons.my_library_music),
+                          title: "Playlist",
+                          icon: Icons.my_library_music,
+                          Route: "/Playlist",
+                        ),
                         RouteButton(
                           title: "Importa",
                           icon: Icons.download,
@@ -176,7 +187,14 @@ class _HomeState extends State<Home> {
                 )
         ],
       ),
-      bottomNavigationBar: BottomBar(playSong: widget.resumeSong,pauseSong: widget.pauseSong,isPlaying: widget.isPlaying,currentSong: widget.currentSong,getDuration: widget.getDuration,setDurationSong: widget.setDurationSong,),
+      bottomNavigationBar: BottomBar(
+        playSong: widget.resumeSong,
+        pauseSong: widget.pauseSong,
+        isPlaying: widget.isPlaying,
+        currentSong: widget.currentSong,
+        getDuration: widget.getDuration,
+        setDurationSong: widget.setDurationSong,
+      ),
     );
   }
 }

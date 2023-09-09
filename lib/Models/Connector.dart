@@ -8,6 +8,7 @@ import 'dart:io';
 // ignore: depend_on_referenced_packages
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
+import 'package:sound_storm/Models/Playlist.dart';
 import 'package:sound_storm/Models/Song.dart';
 
 String baseUrl = "https://understated-throttl.000webhostapp.com";
@@ -83,5 +84,42 @@ class Connector {
     }
 
     return "error";
+  }
+
+  static Future<Song> getSongFromId(int id) async {
+    try {
+      var response =
+          await http.get(Uri.parse('$baseUrl/getSongFromID.php?id=$id'));
+      if (response.statusCode == 200) {
+        var json = jsonDecode(response.body);
+        return Song.fromJson(json);
+      } else {
+        return Song.noSong();
+      }
+    } catch (e) {
+      print(e);
+      return Song.noSong();
+    }
+  }
+
+  static Future<List<Playlist>> getPlaylists() async {
+    try {
+      var response = await http.get(Uri.parse('$baseUrl/getPlaylist.php'));
+      if (response.statusCode == 200) {
+        var json = jsonDecode(response.body);
+        List<Playlist> playlists = [];
+        for (var element in json) {
+          print(element);
+          playlists.add(Playlist.fromJson(element));
+        }
+        return playlists;
+      } else {
+        print("porcodio");
+        return [];
+      }
+    } catch (e) {
+      print(e);
+      return [];
+    }
   }
 }

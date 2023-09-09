@@ -27,9 +27,11 @@ class SongRowVisual extends StatefulWidget {
 class _SongRowVisualState extends State<SongRowVisual> {
   void getImage() async {
     File? appoggio = await widget.song.getImageFile();
-    setState(() {
+    if(mounted){
+      setState(() {
       widget.image = appoggio;
     });
+    }
   }
 
   @override

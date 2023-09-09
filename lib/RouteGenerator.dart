@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:sound_storm/Models/Song.dart';
 import 'package:sound_storm/Screens/Home.dart';
+import 'package:sound_storm/Screens/PlaylistScreen.dart';
 import 'package:sound_storm/Screens/Upload.dart';
 
 class RouteGenerator {
@@ -35,13 +36,14 @@ class RouteGenerator {
           },isPlaying: false,
           setSong: (song)=>{
             print("song to set ${song.title}")
-          },currentSong: Song.noSong(),getDuration: ()=>{print("get duration")},setDurationSong: ()=>print("set duration"),));
+          },currentSong: Song.noSong(),getDuration: ()=>{print("get duration")},setDurationSong: ()=>print("set duration"),songs: [],));
         
 
 
       case '/Upload':
         return MaterialPageRoute(builder: (_) => Upload());
-
+      case '/Playlist':
+        return MaterialPageRoute(builder: (_) => PlaylistScreen());
 
 
      
