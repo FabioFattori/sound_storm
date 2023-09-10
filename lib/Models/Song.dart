@@ -16,8 +16,6 @@ class Song {
   String urlToImage;
   late File? image = null;
   late AudioSource? urlToMp3Local = null;
-  late Timer timer;
-  double currentDuration = 0;
 
   Song(
       {required this.title, required this.urlToMp3, required this.urlToImage}) {
@@ -83,15 +81,5 @@ class Song {
     }
   }
 
-  void startTimer(double maxDuration) {
-    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (title != "" && urlToMp3 != " " && urlToImage != ""&&currentDuration<maxDuration) {
-        currentDuration += 0.0001;
-      }
-    });
-  }
-
-  void stopTimer() {
-    timer.cancel();
-  }
+  
 }

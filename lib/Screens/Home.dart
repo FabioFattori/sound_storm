@@ -23,7 +23,7 @@ class Home extends StatefulWidget {
       required this.isPlaying,
       required this.setSong,
       required this.currentSong,
-      this.songs = const []});
+      this.songs = const [],required this.player});
   late bool isPlaying;
   late Function playSong;
   late Function pauseSong;
@@ -32,6 +32,7 @@ class Home extends StatefulWidget {
   late Function getDuration;
   late Song currentSong;
   late Function setDurationSong;
+  late dynamic player;
 
   final TextEditingController _controller = TextEditingController();
   List<Song> get filteredSongs {
@@ -75,12 +76,6 @@ class _HomeState extends State<Home> {
     setState(() {
       widget.songs = appoggio;
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    
   }
 
   @override
@@ -193,7 +188,7 @@ class _HomeState extends State<Home> {
         isPlaying: widget.isPlaying,
         currentSong: widget.currentSong,
         getDuration: widget.getDuration,
-        setDurationSong: widget.setDurationSong,
+        setDurationSong: widget.setDurationSong,player: widget.player,
       ),
     );
   }

@@ -8,7 +8,7 @@ import 'package:sound_storm/Models/Song.dart';
 import 'package:sound_storm/RouteGenerator.dart';
 import 'package:sound_storm/Screens/Home.dart';
 
-void main()async {
+void main() async {
   await JustAudioBackground.init(
     androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
     androidNotificationChannelName: 'Audio playback',
@@ -22,6 +22,7 @@ class MyApp extends StatefulWidget {
   var player;
   List<Song> songs = [];
   bool isPlaying = false;
+  bool loop = true;
   Song currentSong = Song.noSong();
   late var duration = const Duration(seconds: 200);
 
@@ -31,7 +32,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   void playSong(AudioSource risorsaAudio) async {
-    
     dynamic appoggio = await widget.player.setAudioSource(risorsaAudio);
     await widget.player.play();
 
@@ -94,8 +94,15 @@ class _MyAppState extends State<MyApp> {
         case ProcessingState.ready:
           print("ready");
         case ProcessingState.completed:
-          widget.currentSong.stopTimer();
-          print("completed");
+          if(widget.loop){
+            widget.player.seek(const Duration(seconds: 0));
+            widget.player.play();
+          }else{
+            setState(() {
+            widget.isPlaying = false;
+          });
+          }
+
       }
     });
   }
@@ -118,6 +125,7 @@ class _MyAppState extends State<MyApp> {
         songs: widget.songs,
         getDuration: (value) => getDuration(value),
         setDurationSong: (value) => setTimeSong(value),
+        player: widget.player,
       ),
       onGenerateRoute: RouteGenerator.generateRoute,
     );

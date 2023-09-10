@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:sound_storm/Models/Song.dart';
 import 'package:sound_storm/Screens/Home.dart';
 import 'package:sound_storm/Screens/PlaylistScreen.dart';
@@ -36,7 +37,7 @@ class RouteGenerator {
           },isPlaying: false,
           setSong: (song)=>{
             print("song to set ${song.title}")
-          },currentSong: Song.noSong(),getDuration: ()=>{print("get duration")},setDurationSong: ()=>print("set duration"),songs: [],));
+          },currentSong: Song.noSong(),getDuration: ()=>{print("get duration")},setDurationSong: ()=>print("set duration"),songs: [],player: AudioPlayer(),));
         
 
 
