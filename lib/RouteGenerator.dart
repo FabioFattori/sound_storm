@@ -2,10 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:sound_storm/Models/Playlist.dart';
 import 'package:sound_storm/Models/Song.dart';
 import 'package:sound_storm/Screens/Home.dart';
 import 'package:sound_storm/Screens/PlaylistScreen.dart';
+import 'package:sound_storm/Screens/SinglePlaylist.dart';
 import 'package:sound_storm/Screens/Upload.dart';
+import 'Models/argsToPass.dart';
 
 class RouteGenerator {
   static Route<dynamic> _errorRoute() {
@@ -37,14 +40,19 @@ class RouteGenerator {
           },isPlaying: false,
           setSong: (song)=>{
             print("song to set ${song.title}")
-          },currentSong: Song.noSong(),getDuration: ()=>{print("get duration")},setDurationSong: ()=>print("set duration"),songs: [],player: AudioPlayer(),));
+          },plaPlaylist: ()=>print("playPlaylist"),currentSong: Song.noSong(),getDuration: ()=>{print("get duration")},setDurationSong: ()=>print("set duration"),songs: [],player: AudioPlayer(),));
         
 
 
       case '/Upload':
         return MaterialPageRoute(builder: (_) => Upload());
       case '/Playlist':
-        return MaterialPageRoute(builder: (_) => PlaylistScreen());
+        return MaterialPageRoute(builder: (_) => PlaylistScreen(playPlaylist: args is Function ? args:()=>print("no method"),));
+      case '/SinglePlaylist':
+        if(args is argsToPass){
+          return MaterialPageRoute(builder: (_) => SinglePlaylist(playPlaylist: args.arg2,playlist: args.arg1,));
+        }
+        return _errorRoute();
 
 
      

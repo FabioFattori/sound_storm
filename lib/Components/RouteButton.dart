@@ -3,11 +3,12 @@
 import 'package:flutter/material.dart';
 
 class RouteButton extends StatelessWidget {
-  RouteButton({super.key, required this.title, required this.icon,this.Route=""});
+  RouteButton({super.key, required this.title, required this.icon,this.Route="",this.argsToPass=""});
 
   late String title;
   late IconData icon;
   late String Route;
+  late dynamic argsToPass;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class RouteButton extends StatelessWidget {
       children: [
         ElevatedButton.icon(
           onPressed: () => {
-            Navigator.pushNamed(context, Route),
+            Navigator.pushNamed(context, Route,arguments: argsToPass),
           },
           icon: Icon(
             icon,

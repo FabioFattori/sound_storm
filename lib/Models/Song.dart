@@ -32,6 +32,11 @@ class Song {
 
   factory Song.fromJson(Map<String, dynamic> json) {
     return Song(
+        title: json['Titolo'], urlToMp3: json['urlToMp3'], urlToImage: json['urlToImage']);
+  }
+
+  factory Song.fromStrangeJson(Map<String, dynamic> json) {
+    return Song(
         title: json['title'], urlToMp3: json['song'], urlToImage: json['img']);
   }
 
@@ -60,6 +65,24 @@ class Song {
           tag: MediaItem(
               id: '1',
               title: title,
+              artUri: uri));
+
+      urlToMp3Local = audioSource;
+      return audioSource;
+    } else {
+      return urlToMp3Local!;
+    }
+  }
+
+  Future<AudioSource> getMp3FileWithAlbum(String album) async {
+    if (urlToMp3Local == null) {
+      String url = '$baseUrl$urlToMp3';
+      Uri uri = Uri.parse('$baseUrl$urlToImage');
+      final audioSource = LockCachingAudioSource(Uri.parse(url),
+          tag: MediaItem(
+              id: '1',
+              title: title,
+              album: album,
               artUri: uri));
 
       urlToMp3Local = audioSource;

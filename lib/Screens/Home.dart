@@ -23,16 +23,20 @@ class Home extends StatefulWidget {
       required this.isPlaying,
       required this.setSong,
       required this.currentSong,
-      this.songs = const [],required this.player});
+      required this.plaPlaylist,
+      this.songs = const [],required this.player,this.skipPrevious,this.skipNext});
   late bool isPlaying;
   late Function playSong;
   late Function pauseSong;
+  late Function? skipPrevious;
+  late Function? skipNext;
   late Function resumeSong;
   late Function setSong;
   late Function getDuration;
   late Song currentSong;
   late Function setDurationSong;
   late dynamic player;
+  late Function plaPlaylist;
 
   final TextEditingController _controller = TextEditingController();
   List<Song> get filteredSongs {
@@ -161,6 +165,7 @@ class _HomeState extends State<Home> {
                           title: "Playlist",
                           icon: Icons.my_library_music,
                           Route: "/Playlist",
+                          argsToPass: widget.plaPlaylist,
                         ),
                         RouteButton(
                           title: "Importa",
@@ -189,6 +194,8 @@ class _HomeState extends State<Home> {
         currentSong: widget.currentSong,
         getDuration: widget.getDuration,
         setDurationSong: widget.setDurationSong,player: widget.player,
+        skipNext: widget.skipNext,
+        skipPrevious: widget.skipPrevious,
       ),
     );
   }

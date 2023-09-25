@@ -17,12 +17,18 @@ class Playlist {
     }
   }
 
+  Playlist.noPlaylist() {
+    songs = [];
+    titolo = "";
+    image = "";
+  }
+
   factory Playlist.fromJson(Map<String, dynamic> json) {
     List<dynamic> ids = jsonDecode(json['Songs_id']);
     List<Song> songs = [];
 
-    for (var id in ids) {
-      Connector.getSongFromId(int.parse(id)).then((value) => songs.add(value));
+    for (dynamic id in ids) {
+      Connector.getSongFromId(id).then((value) => songs.add(value));
     }
 
     return Playlist(

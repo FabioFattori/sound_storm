@@ -23,7 +23,7 @@ class Connector {
         var json = jsonDecode(response.body);
         List<Song> songs = [];
         for (var element in json) {
-          songs.add(Song.fromJson(element));
+          songs.add(Song.fromStrangeJson(element));
         }
         return songs;
       } else {

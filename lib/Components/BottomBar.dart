@@ -15,8 +15,10 @@ class BottomBar extends StatefulWidget {
       required this.currentSong,
       required this.getDuration,
       required this.setDurationSong,
-      required this.player});
+      required this.player, this.skipNext,this.skipPrevious});
   late bool isPlaying;
+  late Function? skipPrevious;
+  late Function? skipNext;
   Function getDuration;
   late Function playSong;
   late Function pauseSong;
@@ -60,59 +62,82 @@ class _BottomBarState extends State<BottomBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100,
+      height: 175,
+      width: MediaQuery.of(context).size.width,
       color: const Color.fromRGBO(25, 20, 20, 1),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              ClipRRect(
+          
+              Center(
+                child: ClipRRect(
                 borderRadius: BorderRadius.circular(20), // Image border
                 child: SizedBox.fromSize(
                   // Image radius
                   child: widget.currentSong.image != null
                       ? Image.file(
                           widget.currentSong.image!,
-                          width: 75,
-                          height: 75,
+                          width: 100,
+                          height: 100,
                           fit: BoxFit.cover,
                         )
                       : const Image(
                           image: AssetImage(
                             "images/default.jpg",
                           ),
-                          width: 75,
-                          height: 75,
+                          width: 100,
+                          height: 100,
                         ),
                 ),
               ),
+              ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
+                mainAxisSize: MainAxisSize.max,
                 children: [
-                  Padding(
-                      padding: const EdgeInsets.only(left: 25),
-                      child: Text(
+                   Text(
                         widget.currentSong.title,
                         style:
                             const TextStyle(color: Colors.white, fontSize: 20),
-                      )),
+                      ),
+                  Row(
+                    children: [
+                      IconButton(onPressed: ()=>widget.skipPrevious!(), icon: const Icon(Icons.skip_previous,color: Colors.white,size: 30,)),
+                      IconButton(
+                          onPressed: () {
+                            if (widget.currentSong != Song.noSong()) {
+                              if (widget.isPlaying) {
+                                widget.pauseSong();
+                              } else {
+                                widget.playSong();
+                              }
+                            }
+                          },
+                          icon: widget.isPlaying
+                              ? const Icon(Icons.pause, color: Colors.white,size: 30)
+                              : const Icon(Icons.play_arrow,
+                                  color: Colors.white,size: 30)),
+                      IconButton(onPressed: ()=>widget.skipNext!(), icon: const Icon(Icons.skip_next,color: Colors.white,size: 30)),
+                    ],
+                  ),
                   StreamBuilder<PositionData>(
                       stream: widget.durationStream,
                       builder: (context, snapshot) {
                         final positionData = snapshot.data;
-                        return Container(
-                          padding: const EdgeInsets.only(left: 10),
-                          width: 200,
+                        return SizedBox(
+                          width: 275,
                           child: ProgressBar(
                             baseBarColor: Colors.white,
-                            bufferedBarColor: const Color.fromRGBO(61, 61, 61, 1),
-                            progressBarColor: const Color.fromRGBO(50, 123, 234, 1),
-                            thumbColor:const Color.fromRGBO(50, 123, 234, 1),
-                            thumbGlowColor:const Color.fromRGBO(50, 124, 234, 0.521),
-                            timeLabelTextStyle:const TextStyle(color: Colors.white),
+                            bufferedBarColor:
+                                const Color.fromRGBO(61, 61, 61, 1),
+                            progressBarColor:
+                                const Color.fromRGBO(50, 123, 234, 1),
+                            thumbColor: const Color.fromRGBO(50, 123, 234, 1),
+                            thumbGlowColor:
+                                const Color.fromRGBO(50, 124, 234, 0.521),
+                            timeLabelTextStyle:
+                                const TextStyle(color: Colors.white),
                             progress: positionData?.position ?? Duration.zero,
                             buffered:
                                 positionData?.BufferedPosition ?? Duration.zero,
@@ -125,21 +150,8 @@ class _BottomBarState extends State<BottomBar> {
               ),
             ],
           ),
-          IconButton(
-              onPressed: () {
-                if (widget.currentSong != Song.noSong()) {
-                  if (widget.isPlaying) {
-                    widget.pauseSong();
-                  } else {
-                    widget.playSong();
-                  }
-                }
-              },
-              icon: widget.isPlaying
-                  ? const Icon(Icons.pause, color: Colors.white)
-                  : const Icon(Icons.play_arrow, color: Colors.white)),
-        ],
-      ),
+        
+      
     );
   }
 }
