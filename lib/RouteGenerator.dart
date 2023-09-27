@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:sound_storm/Models/Playlist.dart';
 import 'package:sound_storm/Models/Song.dart';
+import 'package:sound_storm/Screens/AddSongToPlaylist.dart';
 import 'package:sound_storm/Screens/Home.dart';
 import 'package:sound_storm/Screens/PlaylistScreen.dart';
 import 'package:sound_storm/Screens/SinglePlaylist.dart';
@@ -53,6 +54,8 @@ class RouteGenerator {
           return MaterialPageRoute(builder: (_) => SinglePlaylist(playPlaylist: args.arg2,playlist: args.arg1,));
         }
         return _errorRoute();
+      case '/AddSongToPlaylist':
+        return MaterialPageRoute(builder: (_) => AddSongToPlaylist(playlist: args is Playlist ? args:Playlist.noPlaylist()));
 
 
      

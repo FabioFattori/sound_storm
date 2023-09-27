@@ -67,7 +67,7 @@ class SinglePlaylist extends StatelessWidget {
                           RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(61))),
                       padding: MaterialStateProperty.resolveWith(
-                          (states) => const EdgeInsets.all(10)),
+                          (states) => const EdgeInsets.all(15)),
                     ),
                     child: 
                        const Icon(Icons.play_arrow,
@@ -89,7 +89,7 @@ class SinglePlaylist extends StatelessWidget {
                           RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(61))),
                       padding: MaterialStateProperty.resolveWith(
-                          (states) => const EdgeInsets.all(10)),
+                          (states) => const EdgeInsets.all(15)),
                     ),
                     child:  const Icon(Icons.add,
                           color: Color.fromRGBO(25, 20, 20, 1), size: 35),

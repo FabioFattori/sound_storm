@@ -9,7 +9,7 @@ import 'package:just_audio_background/just_audio_background.dart';
 
 class Song {
   String baseUrl = "https://understated-throttl.000webhostapp.com/";
-
+  int id;
   String localUrl = "http://192.168.77.1/AudioSaver/";
   String title;
   String urlToMp3;
@@ -18,7 +18,7 @@ class Song {
   late AudioSource? urlToMp3Local = null;
 
   Song(
-      {required this.title, required this.urlToMp3, required this.urlToImage}) {
+      {required this.title, required this.urlToMp3, required this.urlToImage,required this.id}) {
     if (title == "" && urlToMp3 == "" && urlToImage == "") {
       image = null;
     } else {
@@ -27,17 +27,20 @@ class Song {
   }
 
   factory Song.noSong() {
-    return Song(title: "", urlToMp3: "", urlToImage: "");
+    return Song(title: "", urlToMp3: "", urlToImage: "",id: -1);
   }
 
   factory Song.fromJson(Map<String, dynamic> json) {
     return Song(
-        title: json['Titolo'], urlToMp3: json['urlToMp3'], urlToImage: json['urlToImage']);
+        id: json['id'],
+        title: json['Titolo'],
+        urlToMp3: json['urlToMp3'],
+        urlToImage: json['urlToImage']);
   }
 
   factory Song.fromStrangeJson(Map<String, dynamic> json) {
     return Song(
-        title: json['title'], urlToMp3: json['song'], urlToImage: json['img']);
+        title: json['title'], urlToMp3: json['song'], urlToImage: json['img'],id: json['id']);
   }
 
   Future<AudioSource> getMp3FileWithPlaylist(String playlist) async {
@@ -62,10 +65,7 @@ class Song {
       String url = '$baseUrl$urlToMp3';
       Uri uri = Uri.parse('$baseUrl$urlToImage');
       final audioSource = LockCachingAudioSource(Uri.parse(url),
-          tag: MediaItem(
-              id: '1',
-              title: title,
-              artUri: uri));
+          tag: MediaItem(id: '1', title: title, artUri: uri));
 
       urlToMp3Local = audioSource;
       return audioSource;
@@ -79,11 +79,7 @@ class Song {
       String url = '$baseUrl$urlToMp3';
       Uri uri = Uri.parse('$baseUrl$urlToImage');
       final audioSource = LockCachingAudioSource(Uri.parse(url),
-          tag: MediaItem(
-              id: '1',
-              title: title,
-              album: album,
-              artUri: uri));
+          tag: MediaItem(id: '1', title: title, album: album, artUri: uri));
 
       urlToMp3Local = audioSource;
       return audioSource;
@@ -103,6 +99,4 @@ class Song {
       return image;
     }
   }
-
-  
 }

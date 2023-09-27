@@ -122,4 +122,20 @@ class Connector {
       return [];
     }
   }
+
+  static Future<int> addSongToPlaylist(List<int> toAdd,int idPlaylist)async{
+    try {
+      var response = await http.post(Uri.parse('$baseUrl/AddSongToPlaylist.php?toAdd=${toAdd.toString()}&idPlaylist=${idPlaylist.toString()}'));
+      if (response.statusCode == 200) {
+        var json = jsonDecode(response.body);
+        return 0;
+      } else {
+        
+        return response.statusCode;
+      }
+    } catch (e) {
+      print(e);
+      return 2;
+    }
+  }
 }

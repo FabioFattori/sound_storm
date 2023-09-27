@@ -5,11 +5,12 @@ import 'package:sound_storm/Models/Connector.dart';
 import 'package:sound_storm/Models/Song.dart';
 
 class Playlist {
+  late int id;
   late List<Song> songs;
   late String titolo;
   late String image;
 
-  Playlist({required this.songs, required this.titolo}) {
+  Playlist({required this.songs, required this.titolo,required this.id}) {
     if (songs.isNotEmpty) {
       image = songs[0].urlToImage;
     } else {
@@ -18,6 +19,7 @@ class Playlist {
   }
 
   Playlist.noPlaylist() {
+    id = -1;
     songs = [];
     titolo = "";
     image = "";
@@ -32,6 +34,7 @@ class Playlist {
     }
 
     return Playlist(
+      id: json['id'],
       songs: songs,
       titolo: json['Titolo'],
     );
