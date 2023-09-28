@@ -123,19 +123,69 @@ class Connector {
     }
   }
 
-  static Future<int> addSongToPlaylist(List<int> toAdd,int idPlaylist)async{
+  static Future<int> addSongToPlaylist(List<int> toAdd, int idPlaylist) async {
     try {
-      var response = await http.post(Uri.parse('$baseUrl/AddSongToPlaylist.php?toAdd=${toAdd.toString()}&idPlaylist=${idPlaylist.toString()}'));
+      var response = await http.post(Uri.parse(
+          '$baseUrl/AddSongToPlaylist.php?toAdd=${toAdd.toString()}&idPlaylist=${idPlaylist.toString()}'));
       if (response.statusCode == 200) {
-        var json = jsonDecode(response.body);
         return 0;
       } else {
-        
         return response.statusCode;
       }
     } catch (e) {
       print(e);
       return 2;
     }
+  }
+
+  static Future<Playlist> createPlaylist(String name) async {
+    try {
+      var response =
+          await http.post(Uri.parse('$baseUrl/CreatePlaylist.php?name=$name'));
+      if (response.statusCode == 200) {
+        var json = jsonDecode(response.body);
+        return Playlist.fromJson(json);
+      } else {
+        return Playlist.noPlaylist();
+      }
+    } catch (e) {
+      print(e);
+      return Playlist.noPlaylist();
+    }
+  }
+
+  static Future<Playlist> getFavoritesSongs() async {
+    try {
+      var response =
+          await http.get(Uri.parse('$baseUrl/getFavoritesSongs.php'));
+      if (response.statusCode == 200) {
+        var json = jsonDecode(response.body);
+        List<Song> favoritesSongs = List<Song>.empty(growable: true);
+        
+          for (var element in json) {
+          favoritesSongs.add(Song.fromJson(element));
+          }
+        
+        Playlist toRet =
+            Playlist(songs: favoritesSongs, titolo: "Liked Songs", id: 0);
+        
+        return toRet;
+      } else {
+        return Playlist.noPlaylist();
+      }
+    } catch (e) {
+      print(e);
+      return Playlist.noPlaylist();
+    }
+  }
+
+
+  static void changeFavoriteListFromId(int id){
+    http.post(Uri.parse('$baseUrl/changeFavoriteListFromId.php?id=$id'));
+  }
+
+
+  static void deletePlaylist(int id){
+    http.post(Uri.parse('$baseUrl/deletePlaylist.php?id=$id'));
   }
 }

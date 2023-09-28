@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:sound_storm/Components/CustonContainer.dart';
+import 'package:sound_storm/Models/Connector.dart';
 import 'package:sound_storm/Models/Song.dart';
 
 // ignore: must_be_immutable
@@ -78,7 +79,7 @@ class _SongRowVisualState extends State<SongRowVisual> {
           ),
         ),
         Container(
-          margin: const EdgeInsets.only(left: 40),
+          margin: const EdgeInsets.only(left: 30),
           child: IconButton(
               onPressed: () async {
                 if (widget.clicked) {
@@ -104,7 +105,14 @@ class _SongRowVisualState extends State<SongRowVisual> {
                       color: Colors.white,
                       size: 35,
                     )),
-        )
+                    
+        ),
+        IconButton(onPressed: ()=>{
+          setState(() {
+            widget.song.isLiked = !widget.song.isLiked;
+          }),
+          Connector.changeFavoriteListFromId(widget.song.id)
+        }, icon:Icon(widget.song.isLiked?Icons.favorite:Icons.favorite_border, color: Colors.white, size: 35,))
       ],
     ));
   }

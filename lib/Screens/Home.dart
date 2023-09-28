@@ -9,7 +9,9 @@ import 'package:sound_storm/Components/RouteButton.dart';
 import 'package:sound_storm/Components/Skeleton.dart';
 import 'package:sound_storm/Components/SongRowVisual.dart';
 import 'package:sound_storm/Models/Connector.dart';
+import 'package:sound_storm/Models/Playlist.dart';
 import 'package:sound_storm/Models/Song.dart';
+import 'package:sound_storm/Models/argsToPass.dart';
 
 // ignore: must_be_immutable
 class Home extends StatefulWidget {
@@ -24,7 +26,10 @@ class Home extends StatefulWidget {
       required this.setSong,
       required this.currentSong,
       required this.plaPlaylist,
-      this.songs = const [],required this.player,this.skipPrevious,this.skipNext});
+      this.songs = const [],
+      required this.player,
+      this.skipPrevious,
+      this.skipNext});
   late bool isPlaying;
   late Function playSong;
   late Function pauseSong;
@@ -37,6 +42,8 @@ class Home extends StatefulWidget {
   late Function setDurationSong;
   late dynamic player;
   late Function plaPlaylist;
+
+  
 
   final TextEditingController _controller = TextEditingController();
   List<Song> get filteredSongs {
@@ -82,6 +89,9 @@ class _HomeState extends State<Home> {
     });
   }
 
+  
+
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -129,13 +139,14 @@ class _HomeState extends State<Home> {
                 ),
               )),
           widget.isSearching
-              ? Padding(
+              ? SingleChildScrollView(
+                child: Padding(
                   padding: const EdgeInsets.only(left: 10, right: 10),
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
                     children: [
                       widget.songs.isNotEmpty
                           ? ListView.builder(
+                              
                               shrinkWrap: true,
                               itemCount: widget.filteredSongs.length,
                               itemBuilder: (context, index) {
@@ -153,7 +164,8 @@ class _HomeState extends State<Home> {
                                 return const Skeleton();
                               }),
                     ],
-                  ))
+                  )),
+              )
               : Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -173,7 +185,11 @@ class _HomeState extends State<Home> {
                           Route: "/Upload",
                         ),
                         RouteButton(
-                            title: "Canzoni Preferite", icon: Icons.favorite),
+                          title: "Canzoni Preferite",
+                          icon: Icons.favorite,
+                          Route: "/Favourite",
+                          argsToPass: widget.plaPlaylist,
+                        ),
                       ],
                     )),
                     const Padding(
@@ -193,7 +209,8 @@ class _HomeState extends State<Home> {
         isPlaying: widget.isPlaying,
         currentSong: widget.currentSong,
         getDuration: widget.getDuration,
-        setDurationSong: widget.setDurationSong,player: widget.player,
+        setDurationSong: widget.setDurationSong,
+        player: widget.player,
         skipNext: widget.skipNext,
         skipPrevious: widget.skipPrevious,
       ),

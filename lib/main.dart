@@ -121,7 +121,16 @@ class _MyAppState extends State<MyApp> {
         case ProcessingState.loading:
           print("loading  playlist");
         case ProcessingState.completed:
-          setAndPlayPlaylist(widget.currentPlaylist!);
+          if(widget.currentPlaylist != null){
+            if (widget.loop) {
+              widget.player.seek(const Duration(seconds: 0),index: 0);
+              widget.player.play();
+            } else {
+              setState(() {
+                widget.isPlaying = false;
+              });
+            }
+          }
       }
     });
 
@@ -130,7 +139,7 @@ class _MyAppState extends State<MyApp> {
     // });
 
     widget.player.currentIndexStream.listen((index) {
-      if (index != null) {
+      if (index != null&&widget.currentPlaylist!=null) {
         setState(() {
           widget.currentSong = widget.currentPlaylist!.getSongs()[index];
         });

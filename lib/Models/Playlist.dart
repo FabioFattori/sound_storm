@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:sound_storm/Models/Connector.dart';
@@ -8,21 +9,21 @@ class Playlist {
   late int id;
   late List<Song> songs;
   late String titolo;
-  late String image;
+  late File? image;
 
-  Playlist({required this.songs, required this.titolo,required this.id}) {
-    if (songs.isNotEmpty) {
-      image = songs[0].urlToImage;
-    } else {
-      image = "";
-    }
+  Playlist({required this.songs, required this.titolo, required this.id}) {
+    
+      image = null;
+    
+
+    
   }
 
   Playlist.noPlaylist() {
     id = -1;
     songs = [];
     titolo = "";
-    image = "";
+    image = null;
   }
 
   factory Playlist.fromJson(Map<String, dynamic> json) {
@@ -44,7 +45,12 @@ class Playlist {
     return titolo;
   }
 
-  String getImage() {
+  getImage() async {
+    if (songs.isNotEmpty) {
+      Random random = Random();
+      int index = random.nextInt(songs.length);
+      image = await songs[index].getImageFile();
+    }
     return image;
   }
 

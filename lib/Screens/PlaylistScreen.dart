@@ -4,10 +4,10 @@ import 'package:sound_storm/Models/Playlist.dart';
 import 'package:sound_storm/Models/argsToPass.dart';
 
 class PlaylistScreen extends StatefulWidget {
-  PlaylistScreen({super.key,required this.playPlaylist});
+  PlaylistScreen({super.key, required this.playPlaylist});
 
   final Function playPlaylist;
-  late List<Playlist> playlists;
+  late Future<List<Playlist>> playlists = Future<List<Playlist>>.value([]);
 
   @override
   State<PlaylistScreen> createState() => _PlaylistState();
@@ -15,15 +15,21 @@ class PlaylistScreen extends StatefulWidget {
 
 class _PlaylistState extends State<PlaylistScreen> {
   Future<List<Playlist>> getPlaylists() async {
+    setState(() {
+      widget.playlists = Connector.getPlaylists();
+    });
     return Connector.getPlaylists();
   }
 
-  
+  @override
+  void initState() {
+    super.initState();
+    widget.playlists = Connector.getPlaylists();
+  }
 
   @override
   Widget build(BuildContext context) {
     argsToPass args = argsToPass(arg1: null, arg2: widget.playPlaylist);
-
 
     return Scaffold(
         appBar: AppBar(
@@ -77,70 +83,92 @@ class _PlaylistState extends State<PlaylistScreen> {
                         {Navigator.pushNamed(context, '/CreatePlaylist')},
                   ),
                 )),
-            FutureBuilder<List<Playlist>>(
-              future: getPlaylists(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Card(
-                            color: const Color.fromARGB(255, 78, 72, 72),
-                            child: ListTile(
-                              title: Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(
-                                          20), // Image border
-                                      child: SizedBox.fromSize(
-                                        // Image radius
-                                        child:
-                                            snapshot.data![index].getImage() !=
-                                                    ""
-                                                ? Image.network(
-                                                    snapshot.data![index]
-                                                        .getImage(),
-                                                    width: 50,
-                                                    height: 50,
-                                                  )
-                                                : const Image(
-                                                    image: AssetImage(
-                                                      "images/default.jpg",
-                                                    ),
-                                                    width: 50,
-                                                    height: 50,
-                                                  ),
+            RefreshIndicator(
+                child: FutureBuilder<List<Playlist>>(
+                  future: widget.playlists,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Card(
+                                color: const Color.fromARGB(255, 78, 72, 72),
+                                child: ListTile(
+                                  title: Row(
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 10),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                              20), // Image border
+                                          child: SizedBox.fromSize(
+                                            // Image radius
+                                            child:
+                                                snapshot.data![index].image !=
+                                                        null
+                                                    ? Image.file(
+                                                        snapshot.data![index]
+                                                            .image!,
+                                                        width: 50,
+                                                        height: 50,
+                                                      )
+                                                    : const Image(
+                                                        image: AssetImage(
+                                                          "images/default.jpg",
+                                                        ),
+                                                        width: 50,
+                                                        height: 50,
+                                                      ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                      SizedBox(
+                                        width: 235,
+                                        child: Text(
+                                          snapshot.data![index].getTitolo(),
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20),
+                                        ),
+                                      ),
+                                      IconButton(
+                                          tooltip: "Elimina Playlist",
+                                          onPressed: () => {
+                                                Connector.deletePlaylist(
+                                                    snapshot.data![index].id),
+                                                setState(() {
+                                                  widget.playlists =
+                                                      Connector.getPlaylists();
+                                                })
+                                              },
+                                          icon: const Icon(
+                                            Icons.delete,
+                                            color: Colors.red,
+                                          ))
+                                    ],
                                   ),
-                                  Text(
-                                    snapshot.data![index].getTitolo(),
-                                    style: const TextStyle(
-                                        color: Colors.white, fontSize: 20),
-                                  ),
-                                ],
-                              ),
-                              onTap: () => {
-                                args.arg1 = snapshot.data![index],
-                                Navigator.pushNamed(context, '/SinglePlaylist',
-                                    arguments: args)
-                              },
-                            ),
-                          ));
-                    },
-                  );
-                } else {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              },
-            ),
+                                  onTap: () => {
+                                    args.arg1 = snapshot.data![index],
+                                    Navigator.pushNamed(
+                                        context, '/SinglePlaylist',
+                                        arguments: args)
+                                  },
+                                ),
+                              ));
+                        },
+                      );
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
+                ),
+                onRefresh: () => getPlaylists())
           ],
         ));
   }

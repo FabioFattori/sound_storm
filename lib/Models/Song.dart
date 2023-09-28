@@ -14,11 +14,15 @@ class Song {
   String title;
   String urlToMp3;
   String urlToImage;
+  bool isLiked;
   late File? image = null;
   late AudioSource? urlToMp3Local = null;
 
   Song(
-      {required this.title, required this.urlToMp3, required this.urlToImage,required this.id}) {
+      {required this.title,
+      required this.urlToMp3,
+      required this.urlToImage,
+      required this.id,required this.isLiked}) {
     if (title == "" && urlToMp3 == "" && urlToImage == "") {
       image = null;
     } else {
@@ -27,7 +31,7 @@ class Song {
   }
 
   factory Song.noSong() {
-    return Song(title: "", urlToMp3: "", urlToImage: "",id: -1);
+    return Song(title: "", urlToMp3: "", urlToImage: "", id: -1,isLiked: false);
   }
 
   factory Song.fromJson(Map<String, dynamic> json) {
@@ -35,12 +39,15 @@ class Song {
         id: json['id'],
         title: json['Titolo'],
         urlToMp3: json['urlToMp3'],
-        urlToImage: json['urlToImage']);
+        urlToImage: json['urlToImage'],isLiked: json['liked'] == 1 ? true : false);
   }
 
   factory Song.fromStrangeJson(Map<String, dynamic> json) {
     return Song(
-        title: json['title'], urlToMp3: json['song'], urlToImage: json['img'],id: json['id']);
+        title: json['title'],
+        urlToMp3: json['song'],
+        urlToImage: json['img'],
+        id: json['id'],isLiked: json['liked'] == 1 ? true : false);
   }
 
   Future<AudioSource> getMp3FileWithPlaylist(String playlist) async {
