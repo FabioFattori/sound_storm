@@ -31,6 +31,7 @@ class Connector {
       }
     } catch (e) {
       print(e);
+      getSongList();
       return [];
     }
   }
@@ -161,14 +162,14 @@ class Connector {
       if (response.statusCode == 200) {
         var json = jsonDecode(response.body);
         List<Song> favoritesSongs = List<Song>.empty(growable: true);
-        
-          for (var element in json) {
+
+        for (var element in json) {
           favoritesSongs.add(Song.fromJson(element));
-          }
-        
+        }
+
         Playlist toRet =
             Playlist(songs: favoritesSongs, titolo: "Liked Songs", id: 0);
-        
+
         return toRet;
       } else {
         return Playlist.noPlaylist();
@@ -179,13 +180,11 @@ class Connector {
     }
   }
 
-
-  static void changeFavoriteListFromId(int id){
+  static void changeFavoriteListFromId(int id) {
     http.post(Uri.parse('$baseUrl/changeFavoriteListFromId.php?id=$id'));
   }
 
-
-  static void deletePlaylist(int id){
+  static void deletePlaylist(int id) {
     http.post(Uri.parse('$baseUrl/deletePlaylist.php?id=$id'));
   }
 }

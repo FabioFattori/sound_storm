@@ -43,8 +43,6 @@ class Home extends StatefulWidget {
   late dynamic player;
   late Function plaPlaylist;
 
-  
-
   final TextEditingController _controller = TextEditingController();
   List<Song> get filteredSongs {
     if (_controller.text == "" || _controller.text == " ") {
@@ -59,6 +57,7 @@ class Home extends StatefulWidget {
   }
 
   bool isSearching = false;
+  int refresh = 0;
   List<Song> songs;
   @override
   State<Home> createState() => _HomeState();
@@ -91,7 +90,6 @@ class _HomeState extends State<Home> {
 
   
 
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -140,32 +138,48 @@ class _HomeState extends State<Home> {
               )),
           widget.isSearching
               ? SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 10, right: 10),
-                  child: Column(
-                    children: [
-                      widget.songs.isNotEmpty
-                          ? ListView.builder(
-                              
-                              shrinkWrap: true,
-                              itemCount: widget.filteredSongs.length,
-                              itemBuilder: (context, index) {
-                                return SongRowVisual(
-                                  playSong: widget.playSong,
-                                  pauseSong: widget.pauseSong,
-                                  song: widget.filteredSongs[index],
-                                  setSong: widget.setSong,
-                                );
-                              })
-                          : ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: 4,
-                              itemBuilder: (context, index) {
-                                return const Skeleton();
-                              }),
-                    ],
-                  )),
-              )
+                  child: Padding(
+                      padding: const EdgeInsets.only(left: 10, right: 10),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          widget.songs.isNotEmpty
+                              ? RefreshIndicator(
+                                  child: ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: widget.filteredSongs.length,
+                                      itemBuilder: (context, index) {
+                                        if(widget.refresh == 1){
+                                          widget.filteredSongs[index].getImageFile();
+                                          return SongRowVisual(
+                                            playSong: widget.playSong,
+                                            pauseSong: widget.pauseSong,
+                                            song: widget.filteredSongs[index],
+                                            setSong: widget.setSong,
+                                            image: widget.filteredSongs[index].image,
+                                          );
+                                        }
+                                        return SongRowVisual(
+                                          playSong: widget.playSong,
+                                          pauseSong: widget.pauseSong,
+                                          song: widget.filteredSongs[index],
+                                          setSong: widget.setSong,
+                                        );
+                                      }),
+                                  onRefresh: () async {
+                                    getSongs();
+                                    widget.refresh = 1;
+                                  },
+                                )
+                              : ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: 4,
+                                  itemBuilder: (context, index) {
+                                    return const Skeleton();
+                                  }),
+                        ],
+                      )),
+                )
               : Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [

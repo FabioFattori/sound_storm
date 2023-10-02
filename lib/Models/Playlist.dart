@@ -9,14 +9,14 @@ class Playlist {
   late int id;
   late List<Song> songs;
   late String titolo;
-  late File? image;
+  File? image;
 
   Playlist({required this.songs, required this.titolo, required this.id}) {
-    
-      image = null;
-    
-
-    
+    image = null;
+    //getImage(); after 10 seconds
+    Future.delayed(new Duration(seconds: 2), () {
+      getImage();
+    });
   }
 
   Playlist.noPlaylist() {
@@ -45,11 +45,11 @@ class Playlist {
     return titolo;
   }
 
-  getImage() async {
+  getImage() {
     if (songs.isNotEmpty) {
       Random random = Random();
       int index = random.nextInt(songs.length);
-      image = await songs[index].getImageFile();
+      image = songs[index].image;
     }
     return image;
   }

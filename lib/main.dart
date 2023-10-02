@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
@@ -35,7 +36,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   void playSong(AudioSource risorsaAudio) async {
     dynamic appoggio = await widget.player.setAudioSource(risorsaAudio);
     await widget.player.play();
@@ -89,17 +89,40 @@ class _MyAppState extends State<MyApp> {
     }
 
     playSong(ConcatenatingAudioSource(
-      useLazyPreparation: true,
       children: appoggio,
+      shuffleOrder: DefaultShuffleOrder(random: Random()),
     ));
+
+    if (widget.loop) await widget.player.setLoopMode(LoopMode.all);
+
+    // Set playlist to loop (off|all|one)
+    await widget.player
+        .setShuffleModeEnabled(true); // Shuffle playlist order (true|false)
   }
 
-  void skipPrevious(){
-    widget.player.seekToPrevious();
+  void skipPrevious() async {
+    if(widget.playlist){
+      int currentIndex = widget.player.currentIndex;
+
+      await widget.player.seekToPrevious();
+
+      if (currentIndex == widget.player.currentIndex) {
+        widget.player.seek(const Duration(seconds: 0), index: widget.currentPlaylist!.songs.length-1);
+      }
+    }
   }
 
-  void skipNext(){
-    widget.player.seekToNext();
+  void skipNext()async {
+    if(widget.playlist){
+      int currentIndex = widget.player.currentIndex;
+
+      await widget.player.seekToNext();
+
+      if (currentIndex == widget.player.currentIndex) {
+        widget.player.seek(const Duration(seconds: 0), index: 0);
+      }
+    }
+
   }
 
   @override
@@ -121,9 +144,9 @@ class _MyAppState extends State<MyApp> {
         case ProcessingState.loading:
           print("loading  playlist");
         case ProcessingState.completed:
-          if(widget.currentPlaylist != null){
+          if (widget.currentPlaylist != null) {
             if (widget.loop) {
-              widget.player.seek(const Duration(seconds: 0),index: 0);
+              widget.player.seek(const Duration(seconds: 0), index: 0);
               widget.player.play();
             } else {
               setState(() {
@@ -139,7 +162,7 @@ class _MyAppState extends State<MyApp> {
     // });
 
     widget.player.currentIndexStream.listen((index) {
-      if (index != null&&widget.currentPlaylist!=null) {
+      if (index != null && widget.currentPlaylist != null) {
         setState(() {
           widget.currentSong = widget.currentPlaylist!.getSongs()[index];
         });

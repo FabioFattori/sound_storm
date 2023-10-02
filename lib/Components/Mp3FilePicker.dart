@@ -62,7 +62,7 @@ class _Mp3FilePickerState extends State<Mp3FilePicker> {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   showOverlay(context);
                 });
-                await Connector.uploadFile(file, widget.image, widget.titolo)
+                Connector.uploadFile(file, widget.image, widget.titolo)
                     .then((value) => {
                           setState(() {
                             result = "${value!.split(".")[0]}.";

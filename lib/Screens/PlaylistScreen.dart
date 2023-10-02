@@ -25,6 +25,17 @@ class _PlaylistState extends State<PlaylistScreen> {
   void initState() {
     super.initState();
     widget.playlists = Connector.getPlaylists();
+
+    Future.delayed(const Duration(seconds: 3), () {
+      dynamic x = widget.playlists;
+        setState(() {
+          widget.playlists = new Future<List<Playlist>>.value([]);
+        });
+
+        setState(() {
+          widget.playlists = x;
+        });
+    });
   }
 
   @override

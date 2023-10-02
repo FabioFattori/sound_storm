@@ -14,7 +14,7 @@ class SongRowVisual extends StatefulWidget {
       required this.song,
       required this.playSong,
       required this.pauseSong,
-      required this.setSong});
+      required this.setSong,File? this.image = null});
   Function playSong;
   Function pauseSong;
   Function setSong;

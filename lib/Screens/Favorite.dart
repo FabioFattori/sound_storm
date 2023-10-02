@@ -69,7 +69,10 @@ class _FavoriteState extends State<Favourite> {
                 Container(
                   margin: const EdgeInsets.only(left: 20, right: 20),
                   child: ElevatedButton(
-                    onPressed: ()async => widget.playPlaylist(await widget.Favorite),
+                    onPressed: ()async => {
+                        widget.playPlaylist(await widget.Favorite),
+                        Navigator.pop(context),
+                      },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.resolveWith(
                           (states) => const Color.fromRGBO(50, 123, 234, 1)),
