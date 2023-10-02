@@ -138,6 +138,8 @@ class _HomeState extends State<Home> {
               )),
           widget.isSearching
               ? SingleChildScrollView(
+                  reverse: true,
+                  clipBehavior: Clip.antiAlias,
                   child: Padding(
                       padding: const EdgeInsets.only(left: 10, right: 10),
                       child: Column(

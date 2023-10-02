@@ -48,7 +48,10 @@ class _AddSongToPlaylistState extends State<AddSongToPlaylist> {
             widget.playlist.getTitolo(),
             style: const TextStyle(color: Colors.white, fontSize: 30),
           ),
-          CustomContainer(
+          SizedBox(
+            height: 600,
+            width: MediaQuery.of(context).size.width,
+            child: CustomContainer(
             child: FutureBuilder<List<Song>>(
                 future: Connector.getSongList(),
                 builder: (context, snapshot) {
@@ -97,6 +100,7 @@ class _AddSongToPlaylistState extends State<AddSongToPlaylist> {
                   }
                   return const Center(child: CircularProgressIndicator());
                 }),
+          ),
           ),
           ElevatedButton.icon(
               style: ButtonStyle(
