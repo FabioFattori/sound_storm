@@ -8,6 +8,7 @@ import 'package:sound_storm/Components/CustonContainer.dart';
 import 'package:sound_storm/Components/RouteButton.dart';
 import 'package:sound_storm/Components/Skeleton.dart';
 import 'package:sound_storm/Components/SongRowVisual.dart';
+import 'package:sound_storm/Components/gridImage.dart';
 import 'package:sound_storm/Models/Connector.dart';
 import 'package:sound_storm/Models/Playlist.dart';
 import 'package:sound_storm/Models/Song.dart';
@@ -29,7 +30,7 @@ class Home extends StatefulWidget {
       this.songs = const [],
       required this.player,
       this.skipPrevious,
-      this.skipNext});
+      this.skipNext,this.recentSongs = const []});
   late bool isPlaying;
   late Function playSong;
   late Function pauseSong;
@@ -42,6 +43,7 @@ class Home extends StatefulWidget {
   late Function setDurationSong;
   late dynamic player;
   late Function plaPlaylist;
+  late List<Song> recentSongs;
 
   final TextEditingController _controller = TextEditingController();
   List<Song> get filteredSongs {
@@ -146,7 +148,10 @@ class _HomeState extends State<Home> {
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           widget.songs.isNotEmpty
-                              ? RefreshIndicator(
+                              ? SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height * 0.6,
+                                child: RefreshIndicator(
                                   child: ListView.builder(
                                       shrinkWrap: true,
                                       itemCount: widget.filteredSongs.length,
@@ -172,7 +177,8 @@ class _HomeState extends State<Home> {
                                     getSongs();
                                     widget.refresh = 1;
                                   },
-                                )
+                                ),
+                              )
                               : ListView.builder(
                                   shrinkWrap: true,
                                   itemCount: 4,
@@ -214,7 +220,42 @@ class _HomeState extends State<Home> {
                         "Canzoni Ascoltate di recente:",
                         style: TextStyle(color: Colors.white, fontSize: 20),
                       ),
-                    )
+                    ),
+                    widget.recentSongs.isNotEmpty
+                        ?  SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.3,
+                          child: GridView.builder(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              itemCount: widget.recentSongs.length,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 4),
+                              itemBuilder: (context, index) {
+                                  widget.recentSongs[index].getImageFile();
+                                  return gridImage(
+                                    playSong: widget.playSong,
+                                    pauseSong: widget.pauseSong,
+                                    song: widget.recentSongs[index],
+                                    setSong: widget.setSong,
+                                  );
+                                
+                                
+                              },
+                            ),
+                        )
+                            
+                        : Container(
+                            width: MediaQuery.of(context).size.width,
+                            margin: EdgeInsets.only(top: 100,left: 50,right: 10),
+                            padding: EdgeInsets.all(10),
+                            child: Text(
+                              "Non hai ancora ascoltato nessuna canzone",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 15),
+                            ),
+                          ),
                   ],
                 )
         ],

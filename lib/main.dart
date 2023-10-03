@@ -30,6 +30,7 @@ class MyApp extends StatefulWidget {
   Song currentSong = Song.noSong();
   late var duration = const Duration(seconds: 200);
   Playlist? currentPlaylist;
+  List<Song> recentSongs = [];
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -37,17 +38,34 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   void playSong(AudioSource risorsaAudio) async {
-    dynamic appoggio = await widget.player.setAudioSource(risorsaAudio);
-    await widget.player.play();
+    try {
+      dynamic appoggio = await widget.player.setAudioSource(risorsaAudio);
+      await widget.player.play();
 
-    setState(() {
-      widget.duration = appoggio;
-    });
+      setState(() {
+        widget.duration = appoggio;
+      });
+    } catch (e) {
+      if (e is PlayerInterruptedException) {
+        playSong(risorsaAudio);
+      }
+    }
+  }
+
+  List<Song> reverseList(List<Song> lst, Song toAdd) {
+    lst.insertAll(0, [toAdd]);
+    return lst;
   }
 
   void setSong(Song song) {
     setState(() {
       widget.currentSong = song;
+      if (!widget.recentSongs.contains(song)) {
+        widget.recentSongs = reverseList(widget.recentSongs, song);
+      }
+    });
+    Future.delayed(const Duration(seconds: 2), () {
+      print("recent Songs=>${widget.recentSongs}");
     });
   }
 
@@ -101,19 +119,20 @@ class _MyAppState extends State<MyApp> {
   }
 
   void skipPrevious() async {
-    if(widget.playlist){
+    if (widget.playlist) {
       int currentIndex = widget.player.currentIndex;
 
       await widget.player.seekToPrevious();
 
       if (currentIndex == widget.player.currentIndex) {
-        widget.player.seek(const Duration(seconds: 0), index: widget.currentPlaylist!.songs.length-1);
+        widget.player.seek(const Duration(seconds: 0),
+            index: widget.currentPlaylist!.songs.length - 1);
       }
     }
   }
 
-  void skipNext()async {
-    if(widget.playlist){
+  void skipNext() async {
+    if (widget.playlist) {
       int currentIndex = widget.player.currentIndex;
 
       await widget.player.seekToNext();
@@ -122,7 +141,10 @@ class _MyAppState extends State<MyApp> {
         widget.player.seek(const Duration(seconds: 0), index: 0);
       }
     }
+  }
 
+  List<Song> getRecentSongs() {
+    return widget.recentSongs;
   }
 
   @override
@@ -226,6 +248,7 @@ class _MyAppState extends State<MyApp> {
         plaPlaylist: (value) => setAndPlayPlaylist(value),
         skipNext: () => skipNext(),
         skipPrevious: () => skipPrevious(),
+        recentSongs: getRecentSongs(),
       ),
       onGenerateRoute: RouteGenerator.generateRoute,
     );

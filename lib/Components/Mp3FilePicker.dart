@@ -50,7 +50,14 @@ class _Mp3FilePickerState extends State<Mp3FilePicker> {
                 'Nessun file selezionato',
                 style: TextStyle(color: Colors.white),
               )
-            : Text(file.name, style: const TextStyle(color: Colors.white)),
+            : SizedBox(
+                width: 200,
+                child: Text(
+                  file.name,
+                  style: const TextStyle(color: Colors.white),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
         Padding(
           padding: const EdgeInsets.only(top:16),
           child: ElevatedButton(

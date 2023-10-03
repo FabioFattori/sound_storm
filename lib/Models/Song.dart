@@ -106,4 +106,10 @@ class Song {
       return image;
     }
   }
+
+
+  @override
+  String toString() {
+    return "Song: $title";
+  }
 }
