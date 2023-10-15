@@ -18,7 +18,15 @@ String localUrl = "http://192.168.77.1/AudioSaver";
 class Connector {
   static Future<List<Song>> getSongList() async {
     try {
-      var response = await http.get(Uri.parse('$baseUrl/getFiles.php'));
+      var response = await http.get(
+          Uri.parse(
+            '$baseUrl/getFiles.php',
+          ),
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            'Content-Type': 'application/json',
+            'Accept': '*/*'
+          });
       if (response.statusCode == 200) {
         var json = jsonDecode(response.body);
         List<Song> songs = [];
@@ -40,8 +48,16 @@ class Connector {
       PlatformFile audio, PlatformFile? image, String titolo) async {
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse('$baseUrl/uploadAudio.php?Titolo=$titolo'),
+      Uri.parse(
+        '$baseUrl/uploadAudio.php?Titolo=$titolo',
+      ),
     );
+
+    request.headers.addAll({
+      "Access-Control-Allow-Origin": "*",
+      'Content-Type': 'application/json',
+      'Accept': '*/*'
+    });
 
     if (image != null) {
       File imageFile = File(image!.path!);
@@ -89,8 +105,15 @@ class Connector {
 
   static Future<Song> getSongFromId(int id) async {
     try {
-      var response =
-          await http.get(Uri.parse('$baseUrl/getSongFromID.php?id=$id'));
+      var response = await http.get(
+          Uri.parse(
+            '$baseUrl/getSongFromID.php?id=$id',
+          ),
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            'Content-Type': 'application/json',
+            'Accept': '*/*'
+          });
       if (response.statusCode == 200) {
         var json = jsonDecode(response.body);
         return Song.fromJson(json);
@@ -105,7 +128,12 @@ class Connector {
 
   static Future<List<Playlist>> getPlaylists() async {
     try {
-      var response = await http.get(Uri.parse('$baseUrl/getPlaylist.php'));
+      var response =
+          await http.get(Uri.parse('$baseUrl/getPlaylist.php'), headers: {
+        "Access-Control-Allow-Origin": "*",
+        'Content-Type': 'application/json',
+        'Accept': '*/*'
+      });
       if (response.statusCode == 200) {
         var json = jsonDecode(response.body);
         List<Playlist> playlists = [];
@@ -126,8 +154,14 @@ class Connector {
 
   static Future<int> addSongToPlaylist(List<int> toAdd, int idPlaylist) async {
     try {
-      var response = await http.post(Uri.parse(
-          '$baseUrl/AddSongToPlaylist.php?toAdd=${toAdd.toString()}&idPlaylist=${idPlaylist.toString()}'));
+      var response = await http.post(
+          Uri.parse(
+              '$baseUrl/AddSongToPlaylist.php?toAdd=${toAdd.toString()}&idPlaylist=${idPlaylist.toString()}'),
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            'Content-Type': 'application/json',
+            'Accept': '*/*'
+          });
       if (response.statusCode == 200) {
         return 0;
       } else {
@@ -141,8 +175,12 @@ class Connector {
 
   static Future<Playlist> createPlaylist(String name) async {
     try {
-      var response =
-          await http.post(Uri.parse('$baseUrl/CreatePlaylist.php?name=$name'));
+      var response = await http
+          .post(Uri.parse('$baseUrl/CreatePlaylist.php?name=$name'), headers: {
+        "Access-Control-Allow-Origin": "*",
+        'Content-Type': 'application/json',
+        'Accept': '*/*'
+      });
       if (response.statusCode == 200) {
         var json = jsonDecode(response.body);
         return Playlist.fromJson(json);
@@ -158,7 +196,11 @@ class Connector {
   static Future<Playlist> getFavoritesSongs() async {
     try {
       var response =
-          await http.get(Uri.parse('$baseUrl/getFavoritesSongs.php'));
+          await http.get(Uri.parse('$baseUrl/getFavoritesSongs.php'), headers: {
+        "Access-Control-Allow-Origin": "*",
+        'Content-Type': 'application/json',
+        'Accept': '*/*'
+      });
       if (response.statusCode == 200) {
         var json = jsonDecode(response.body);
         List<Song> favoritesSongs = List<Song>.empty(growable: true);
@@ -181,10 +223,19 @@ class Connector {
   }
 
   static void changeFavoriteListFromId(int id) {
-    http.post(Uri.parse('$baseUrl/changeFavoriteListFromId.php?id=$id'));
+    http.post(Uri.parse('$baseUrl/changeFavoriteListFromId.php?id=$id'),
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          'Content-Type': 'application/json',
+          'Accept': '*/*'
+        });
   }
 
   static void deletePlaylist(int id) {
-    http.post(Uri.parse('$baseUrl/deletePlaylist.php?id=$id'));
+    http.post(Uri.parse('$baseUrl/deletePlaylist.php?id=$id'), headers: {
+      "Access-Control-Allow-Origin": "*",
+      'Content-Type': 'application/json',
+      'Accept': '*/*'
+    });
   }
 }

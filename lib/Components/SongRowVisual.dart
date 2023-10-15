@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:sound_storm/Components/CustonContainer.dart';
 import 'package:sound_storm/Models/Connector.dart';
 import 'package:sound_storm/Models/Song.dart';
+import 'package:flutter/foundation.dart';
 
 // ignore: must_be_immutable
 class SongRowVisual extends StatefulWidget {
@@ -14,7 +15,8 @@ class SongRowVisual extends StatefulWidget {
       required this.song,
       required this.playSong,
       required this.pauseSong,
-      required this.setSong,File? this.image = null});
+      required this.setSong,
+      File? this.image = null});
   Function playSong;
   Function pauseSong;
   Function setSong;
@@ -28,10 +30,10 @@ class SongRowVisual extends StatefulWidget {
 class _SongRowVisualState extends State<SongRowVisual> {
   void getImage() async {
     File? appoggio = await widget.song.getImageFile();
-    if(mounted){
+    if (mounted) {
       setState(() {
-      widget.image = appoggio;
-    });
+        widget.image = appoggio;
+      });
     }
   }
 
@@ -39,6 +41,7 @@ class _SongRowVisualState extends State<SongRowVisual> {
   void initState() {
     super.initState();
     getImage();
+    print(widget.song.getUrlToMp3());
   }
 
   @override
@@ -53,12 +56,19 @@ class _SongRowVisualState extends State<SongRowVisual> {
           child: SizedBox.fromSize(
             // Image radius
             child: widget.image != null
-                ? Image.file(
-                    widget.image!,
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.cover,
-                  )
+                ? kIsWeb
+                    ? Image.network(
+                        widget.song.getUrlToImage(),
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      )
+                    : Image.file(
+                        widget.image!,
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      )
                 : const Image(
                     image: AssetImage(
                       "images/default.jpg",
@@ -85,8 +95,12 @@ class _SongRowVisualState extends State<SongRowVisual> {
                 if (widget.clicked) {
                   widget.pauseSong();
                 } else {
-                  await widget.song.getMp3File().then((value) =>
-                      {widget.playSong(value), widget.setSong(widget.song),});
+                  
+                    await widget.song.getMp3File().then((value) => {
+                          widget.playSong(value),
+                          widget.setSong(widget.song),
+                        });
+                  
                 }
                 if (mounted) {
                   setState(() {
@@ -105,14 +119,19 @@ class _SongRowVisualState extends State<SongRowVisual> {
                       color: Colors.white,
                       size: 35,
                     )),
-                    
         ),
-        IconButton(onPressed: ()=>{
-          setState(() {
-            widget.song.isLiked = !widget.song.isLiked;
-          }),
-          Connector.changeFavoriteListFromId(widget.song.id)
-        }, icon:Icon(widget.song.isLiked?Icons.favorite:Icons.favorite_border, color: Colors.white, size: 35,))
+        IconButton(
+            onPressed: () => {
+                  setState(() {
+                    widget.song.isLiked = !widget.song.isLiked;
+                  }),
+                  Connector.changeFavoriteListFromId(widget.song.id)
+                },
+            icon: Icon(
+              widget.song.isLiked ? Icons.favorite : Icons.favorite_border,
+              color: Colors.white,
+              size: 35,
+            ))
       ],
     ));
   }

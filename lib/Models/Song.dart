@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
@@ -50,6 +51,14 @@ class Song {
         id: json['id'],isLiked: json['liked'] == 1 ? true : false);
   }
 
+  String getUrlToImage(){
+    return '$baseUrl$urlToImage';
+  }
+
+  String getUrlToMp3(){
+    return '$baseUrl$urlToMp3';
+  }
+
   Future<AudioSource> getMp3FileWithPlaylist(String playlist) async {
     if (urlToMp3Local == null) {
       String url = '$baseUrl$urlToMp3';
@@ -71,9 +80,14 @@ class Song {
     if (urlToMp3Local == null) {
       String url = '$baseUrl$urlToMp3';
       Uri uri = Uri.parse('$baseUrl$urlToImage');
+      if(kIsWeb){
+        urlToMp3Local = AudioSource.uri(Uri.parse(url),
+            tag: MediaItem(id: '1', title: title, artUri: uri));
+        return urlToMp3Local!;
+      }
+
       final audioSource = LockCachingAudioSource(Uri.parse(url),
           tag: MediaItem(id: '1', title: title, artUri: uri));
-
       urlToMp3Local = audioSource;
       return audioSource;
     } else {
@@ -85,6 +99,13 @@ class Song {
     if (urlToMp3Local == null) {
       String url = '$baseUrl$urlToMp3';
       Uri uri = Uri.parse('$baseUrl$urlToImage');
+
+      if(kIsWeb){
+        urlToMp3Local = AudioSource.uri(Uri.parse(url),
+            tag: MediaItem(id: '1', title: title, artUri: uri));
+        return urlToMp3Local!;
+      }
+
       final audioSource = LockCachingAudioSource(Uri.parse(url),
           tag: MediaItem(id: '1', title: title, album: album, artUri: uri));
 

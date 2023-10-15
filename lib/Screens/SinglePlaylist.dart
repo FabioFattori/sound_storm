@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sound_storm/Components/CustonContainer.dart';
 import 'package:sound_storm/Models/Playlist.dart';
@@ -40,11 +41,16 @@ class SinglePlaylist extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20), // Image border
                 child: SizedBox.fromSize(
                   size: const Size.fromRadius(100), // Image radius
-                  child: playlist.image != null
-                      ? Image.file(
-                          playlist.image!,
-                          fit: BoxFit.cover,
-                        )
+                  child: playlist.getImageWeb() != null
+                      ? kIsWeb
+                          ? Image.network(
+                              playlist.getImageWeb(),
+                              fit: BoxFit.cover,
+                            )
+                          : Image.file(
+                              playlist.image!,
+                              fit: BoxFit.cover,
+                            )
                       : const Image(
                           image: AssetImage("images/default.jpg"),
                         ),
@@ -69,17 +75,16 @@ class SinglePlaylist extends StatelessWidget {
                       padding: MaterialStateProperty.resolveWith(
                           (states) => const EdgeInsets.all(15)),
                     ),
-                    child: 
-                       const Icon(Icons.play_arrow,
-                          color: Color.fromRGBO(25, 20, 20, 1), size: 35),
-                    
+                    child: const Icon(Icons.play_arrow,
+                        color: Color.fromRGBO(25, 20, 20, 1), size: 35),
                   ),
                 ),
-
                 Container(
                   margin: const EdgeInsets.only(left: 20, right: 20),
                   child: ElevatedButton(
-                    onPressed: () => Navigator.pushNamed(context, "/AddSongToPlaylist",arguments: playlist),
+                    onPressed: () => Navigator.pushNamed(
+                        context, "/AddSongToPlaylist",
+                        arguments: playlist),
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.resolveWith(
                           (states) => const Color.fromRGBO(50, 123, 234, 1)),
@@ -91,11 +96,10 @@ class SinglePlaylist extends StatelessWidget {
                       padding: MaterialStateProperty.resolveWith(
                           (states) => const EdgeInsets.all(15)),
                     ),
-                    child:  const Icon(Icons.add,
-                          color: Color.fromRGBO(25, 20, 20, 1), size: 35),
-                    ),
+                    child: const Icon(Icons.add,
+                        color: Color.fromRGBO(25, 20, 20, 1), size: 35),
                   ),
-                
+                ),
               ],
             ),
             CustomContainer(

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:sound_storm/Models/PositionData.dart';
@@ -76,12 +77,19 @@ class _BottomBarState extends State<BottomBar> {
                 child: SizedBox.fromSize(
                   // Image radius
                   child: widget.currentSong.image != null
-                      ? Image.file(
-                          widget.currentSong.image!,
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
-                        )
+                      ? kIsWeb
+                    ? Image.network(
+                        widget.currentSong.getUrlToImage(),
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      )
+                    : Image.file(
+                        widget.currentSong.image!,
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      )
                       : const Image(
                           image: AssetImage(
                             "images/default.jpg",

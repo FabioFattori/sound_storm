@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sound_storm/Models/Song.dart';
 
@@ -30,12 +31,19 @@ class _gridImageState extends State<gridImage> {
         child: SizedBox.fromSize(
           // Image radius
           child: widget.song.image != null
-              ? Image.file(
-                  widget.song.image!,
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover,
-                )
+              ? kIsWeb
+                    ? Image.network(
+                        widget.song.getUrlToImage(),
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      )
+                    : Image.file(
+                        widget.song.image!,
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      )
               : const Image(
                   image: AssetImage(
                     "images/default.jpg",

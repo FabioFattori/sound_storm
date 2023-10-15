@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sound_storm/Models/Connector.dart';
 import 'package:sound_storm/Models/Playlist.dart';
@@ -121,11 +122,22 @@ class _PlaylistState extends State<PlaylistScreen> {
                                             child:
                                                 snapshot.data![index].image !=
                                                         null
-                                                    ? Image.file(
-                                                        snapshot.data![index]
+                                                    ? kIsWeb ?
+                                                    Image.network(
+                                                        snapshot
+                                                            .data![index]
+                                                            .getImageWeb(),
+                                                        width: 50,
+                                                        height: 50,
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                    : Image.file(
+                                                        snapshot
+                                                            .data![index]
                                                             .image!,
                                                         width: 50,
                                                         height: 50,
+                                                        fit: BoxFit.cover,
                                                       )
                                                     : const Image(
                                                         image: AssetImage(

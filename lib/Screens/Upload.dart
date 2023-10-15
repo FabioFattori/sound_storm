@@ -83,8 +83,8 @@ class _UploadState extends State<Upload> {
                         child: SizedBox.fromSize(
                           size: const Size.fromRadius(100), // Image radius
                           child: widget.image != null
-                              ? Image.file(
-                                  File(widget.image!.path!),
+                              ? Image.memory(
+                                  widget.image!.bytes!,
                                   fit: BoxFit.cover,
                                 )
                               : const Image(
@@ -104,6 +104,8 @@ class _UploadState extends State<Upload> {
                                   setState(() {
                                     widget.image = result.files.single;
                                   });
+
+                                  print(result.files.single.toString());
                                 } else {
                                   // User canceled the picker
                                 }

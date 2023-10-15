@@ -37,13 +37,15 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  void playSong(AudioSource risorsaAudio) async {
+  void playSong(dynamic risorsaAudio) async {
     try {
-      dynamic appoggio = await widget.player.setAudioSource(risorsaAudio);
-      await widget.player.play();
-
+      dynamic duration;
+      
+        duration = await widget.player.setAudioSource(risorsaAudio);
+        await widget.player.play();
+      
       setState(() {
-        widget.duration = appoggio;
+        widget.duration = duration;
       });
     } catch (e) {
       if (e is PlayerInterruptedException) {

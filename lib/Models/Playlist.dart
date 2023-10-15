@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:sound_storm/Models/Connector.dart';
 import 'package:sound_storm/Models/Song.dart';
 
@@ -49,9 +50,19 @@ class Playlist {
     if (songs.isNotEmpty) {
       Random random = Random();
       int index = random.nextInt(songs.length);
+
       image = songs[index].image;
     }
     return image;
+  }
+
+  getImageWeb() {
+    if (songs.isNotEmpty) {
+      Random random = Random();
+      int index = random.nextInt(songs.length);
+
+      return songs[index].getUrlToImage();
+    }
   }
 
   List<Song> getSongs() {
