@@ -48,7 +48,8 @@ class Song {
         title: json['title'],
         urlToMp3: json['song'],
         urlToImage: json['img'],
-        id: json['id'],isLiked: json['liked'] == 1 ? true : false);
+        id: json['id'],
+        isLiked: json['liked'] == 1 ? true : false);
   }
 
   String getUrlToImage(){
@@ -132,5 +133,16 @@ class Song {
   @override
   String toString() {
     return "Song: $title";
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'Titolo': title,
+        'urlToMp3': urlToMp3,
+        'urlToImage': urlToImage,
+        'liked': isLiked ? 1 : 0
+      };
+  getObject() {
+    return toJson();
   }
 }

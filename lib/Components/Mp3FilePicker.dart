@@ -29,6 +29,8 @@ class _Mp3FilePickerState extends State<Mp3FilePicker> {
         file = result.files.single;
       });
     }
+
+    print(file.name);
   }
 
   @override

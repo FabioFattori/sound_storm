@@ -18,15 +18,7 @@ String localUrl = "http://192.168.77.1/AudioSaver";
 class Connector {
   static Future<List<Song>> getSongList() async {
     try {
-      var response = await http.get(
-          Uri.parse(
-            '$baseUrl/getFiles.php',
-          ),
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            'Content-Type': 'application/json',
-            'Accept': '*/*'
-          });
+      var response = await http.get(Uri.parse('$baseUrl/getFiles.php'));
       if (response.statusCode == 200) {
         var json = jsonDecode(response.body);
         List<Song> songs = [];
@@ -46,61 +38,69 @@ class Connector {
 
   static Future<String?> uploadFile(
       PlatformFile audio, PlatformFile? image, String titolo) async {
-    var request = http.MultipartRequest(
-      'POST',
-      Uri.parse(
-        '$baseUrl/uploadAudio.php?Titolo=$titolo',
-      ),
-    );
 
-    request.headers.addAll({
-      "Access-Control-Allow-Origin": "*",
-      'Content-Type': 'application/json',
-      'Accept': '*/*'
-    });
+      final imageConverted = await image!.bytes;
+      final mp3Converted = await audio.bytes;
 
-    if (image != null) {
-      File imageFile = File(image!.path!);
-      var imageType = lookupMimeType(imageFile.path);
+      var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/uploadAudio.php?Titolo=$titolo'));
+  request.files.add(await http.MultipartFile.fromBytes('Image', imageConverted!));
+  request.files.add(await http.MultipartFile.fromBytes('Audio', mp3Converted!));
 
-      var imageToSend = http.MultipartFile(
-        'Image',
-        File(imageFile.path).readAsBytes().asStream(),
-        File(imageFile.path).lengthSync(),
-        //get the name of the file
-        filename: image.name,
-        contentType: MediaType.parse(imageType!),
-      );
+  var response = await request.send();
+  if (response.statusCode == 200) {
+    print('Files uploaded successfully');
+  } else {
+    print('Failed to upload files: ${response.reasonPhrase}');
+  }
+    // var request = http.MultipartRequest(
+    //   'POST',
+    //   Uri.parse(
+    //     '$baseUrl/uploadAudio.php?Titolo=$titolo',
+    //   ),
+    // );
 
-      request.files.add(imageToSend);
-    }
+    // if (image != null) {
+    //   File imageFile = File(image!.path!);
+    //   var imageType = lookupMimeType(imageFile.path);
 
-    File file = File(audio.path!);
+    //   var imageToSend = http.MultipartFile(
+    //     'Image',
+    //     File(imageFile.path).readAsBytes().asStream(),
+    //     File(imageFile.path).lengthSync(),
+    //     //get the name of the file
+    //     filename: image.name,
+    //     contentType: MediaType.parse(imageType!),
+    //   );
 
-    var mimeType = lookupMimeType(file.path);
+    //   request.files.add(imageToSend);
+    // }
 
-    if (mimeType == 'audio/mpeg' || mimeType == 'audio/mp3') {
-      var multipartFile = http.MultipartFile(
-        'Audio',
-        File(file.path).readAsBytes().asStream(),
-        File(file.path).lengthSync(),
-        //get the name of the file
-        filename: audio.name,
-        contentType: MediaType.parse(mimeType!),
-      );
+    // File file = File(audio.path!);
 
-      request.files.add(multipartFile);
+    // var mimeType = lookupMimeType(file.path);
 
-      var response = await request.send();
+    // if (mimeType == 'audio/mpeg' || mimeType == 'audio/mp3') {
+    //   var multipartFile = http.MultipartFile(
+    //     'Audio',
+    //     File(file.path).readAsBytes().asStream(),
+    //     File(file.path).lengthSync(),
+    //     //get the name of the file
+    //     filename: audio.name,
+    //     contentType: MediaType.parse(mimeType!),
+    //   );
 
-      if (response.statusCode == 200) {
-        return await response.stream.bytesToString();
-      } else {
-        return 'Errore di connessione , controlla la connessione e riprova';
-      }
-    }
+    //   request.files.add(multipartFile);
 
-    return "error";
+    //   var response = await request.send();
+
+    //   if (response.statusCode == 200) {
+    //     return await response.stream.bytesToString();
+    //   } else {
+    //     return 'Errore di connessione , controlla la connessione e riprova';
+    //   }
+    // }
+
+    // return "error";
   }
 
   static Future<Song> getSongFromId(int id) async {
@@ -129,11 +129,7 @@ class Connector {
   static Future<List<Playlist>> getPlaylists() async {
     try {
       var response =
-          await http.get(Uri.parse('$baseUrl/getPlaylist.php'), headers: {
-        "Access-Control-Allow-Origin": "*",
-        'Content-Type': 'application/json',
-        'Accept': '*/*'
-      });
+          await http.get(Uri.parse('$baseUrl/getPlaylist.php'));
       if (response.statusCode == 200) {
         var json = jsonDecode(response.body);
         List<Playlist> playlists = [];
@@ -157,11 +153,7 @@ class Connector {
       var response = await http.post(
           Uri.parse(
               '$baseUrl/AddSongToPlaylist.php?toAdd=${toAdd.toString()}&idPlaylist=${idPlaylist.toString()}'),
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            'Content-Type': 'application/json',
-            'Accept': '*/*'
-          });
+          );
       if (response.statusCode == 200) {
         return 0;
       } else {
@@ -176,11 +168,8 @@ class Connector {
   static Future<Playlist> createPlaylist(String name) async {
     try {
       var response = await http
-          .post(Uri.parse('$baseUrl/CreatePlaylist.php?name=$name'), headers: {
-        "Access-Control-Allow-Origin": "*",
-        'Content-Type': 'application/json',
-        'Accept': '*/*'
-      });
+          .post(Uri.parse('$baseUrl/CreatePlaylist.php?name=$name')
+        );
       if (response.statusCode == 200) {
         var json = jsonDecode(response.body);
         return Playlist.fromJson(json);
@@ -196,11 +185,7 @@ class Connector {
   static Future<Playlist> getFavoritesSongs() async {
     try {
       var response =
-          await http.get(Uri.parse('$baseUrl/getFavoritesSongs.php'), headers: {
-        "Access-Control-Allow-Origin": "*",
-        'Content-Type': 'application/json',
-        'Accept': '*/*'
-      });
+          await http.get(Uri.parse('$baseUrl/getFavoritesSongs.php'));
       if (response.statusCode == 200) {
         var json = jsonDecode(response.body);
         List<Song> favoritesSongs = List<Song>.empty(growable: true);
@@ -224,18 +209,10 @@ class Connector {
 
   static void changeFavoriteListFromId(int id) {
     http.post(Uri.parse('$baseUrl/changeFavoriteListFromId.php?id=$id'),
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          'Content-Type': 'application/json',
-          'Accept': '*/*'
-        });
+        );
   }
 
   static void deletePlaylist(int id) {
-    http.post(Uri.parse('$baseUrl/deletePlaylist.php?id=$id'), headers: {
-      "Access-Control-Allow-Origin": "*",
-      'Content-Type': 'application/json',
-      'Accept': '*/*'
-    });
+    http.post(Uri.parse('$baseUrl/deletePlaylist.php?id=$id'));
   }
 }

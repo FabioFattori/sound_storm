@@ -105,7 +105,7 @@ class _UploadState extends State<Upload> {
                                     widget.image = result.files.single;
                                   });
 
-                                  print(result.files.single.toString());
+                                  
                                 } else {
                                   // User canceled the picker
                                 }
