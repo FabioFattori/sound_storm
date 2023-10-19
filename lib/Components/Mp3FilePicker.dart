@@ -30,7 +30,6 @@ class _Mp3FilePickerState extends State<Mp3FilePicker> {
       });
     }
 
-    print(file.name);
   }
 
   @override

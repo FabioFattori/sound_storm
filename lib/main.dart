@@ -66,9 +66,7 @@ class _MyAppState extends State<MyApp> {
         widget.recentSongs = reverseList(widget.recentSongs, song);
       }
     });
-    Future.delayed(const Duration(seconds: 2), () {
-      print("recent Songs=>${widget.recentSongs}");
-    });
+    
   }
 
   void setTimeSong(Duration duration) async {

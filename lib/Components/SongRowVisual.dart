@@ -41,7 +41,6 @@ class _SongRowVisualState extends State<SongRowVisual> {
   void initState() {
     super.initState();
     getImage();
-    print(widget.song.getUrlToMp3());
   }
 
   @override

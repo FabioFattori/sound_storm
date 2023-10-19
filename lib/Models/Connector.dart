@@ -38,20 +38,23 @@ class Connector {
 
   static Future<String?> uploadFile(
       PlatformFile audio, PlatformFile? image, String titolo) async {
+    final imageConverted = await image!.bytes;
+    final mp3Converted = await audio.bytes;
 
-      final imageConverted = await image!.bytes;
-      final mp3Converted = await audio.bytes;
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('$baseUrl/uploadAudio.php?Titolo=$titolo'));
+    request.files.add(await http.MultipartFile.fromBytes(
+        'Image', imageConverted!,
+        filename: image.name));
+    request.files.add(await http.MultipartFile.fromBytes('Audio', mp3Converted!,
+        filename: audio.name));
 
-      var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/uploadAudio.php?Titolo=$titolo'));
-  request.files.add(await http.MultipartFile.fromBytes('Image', imageConverted!));
-  request.files.add(await http.MultipartFile.fromBytes('Audio', mp3Converted!));
-
-  var response = await request.send();
-  if (response.statusCode == 200) {
-    print('Files uploaded successfully');
-  } else {
-    print('Failed to upload files: ${response.reasonPhrase}');
-  }
+    var response = await request.send();
+    if (response.statusCode == 200) {
+      return await response.stream.bytesToString();
+    } else {
+      return "Failed to upload files: ${response.reasonPhrase}";
+    }
     // var request = http.MultipartRequest(
     //   'POST',
     //   Uri.parse(
@@ -105,15 +108,9 @@ class Connector {
 
   static Future<Song> getSongFromId(int id) async {
     try {
-      var response = await http.get(
-          Uri.parse(
-            '$baseUrl/getSongFromID.php?id=$id',
-          ),
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            'Content-Type': 'application/json',
-            'Accept': '*/*'
-          });
+      var response = await http.get(Uri.parse(
+        '$baseUrl/getSongFromID.php?id=$id',
+      ));
       if (response.statusCode == 200) {
         var json = jsonDecode(response.body);
         return Song.fromJson(json);
@@ -128,18 +125,15 @@ class Connector {
 
   static Future<List<Playlist>> getPlaylists() async {
     try {
-      var response =
-          await http.get(Uri.parse('$baseUrl/getPlaylist.php'));
+      var response = await http.get(Uri.parse('$baseUrl/getPlaylist.php'));
       if (response.statusCode == 200) {
         var json = jsonDecode(response.body);
         List<Playlist> playlists = [];
         for (var element in json) {
-          print(element);
           playlists.add(Playlist.fromJson(element));
         }
         return playlists;
       } else {
-        print("porcodio");
         return [];
       }
     } catch (e) {
@@ -151,9 +145,9 @@ class Connector {
   static Future<int> addSongToPlaylist(List<int> toAdd, int idPlaylist) async {
     try {
       var response = await http.post(
-          Uri.parse(
-              '$baseUrl/AddSongToPlaylist.php?toAdd=${toAdd.toString()}&idPlaylist=${idPlaylist.toString()}'),
-          );
+        Uri.parse(
+            '$baseUrl/AddSongToPlaylist.php?toAdd=${toAdd.toString()}&idPlaylist=${idPlaylist}'),
+      );
       if (response.statusCode == 200) {
         return 0;
       } else {
@@ -168,8 +162,7 @@ class Connector {
   static Future<Playlist> createPlaylist(String name) async {
     try {
       var response = await http
-          .post(Uri.parse('$baseUrl/CreatePlaylist.php?name=$name')
-        );
+          .post(Uri.parse('$baseUrl/CreatePlaylist.php?Titolo=$name'));
       if (response.statusCode == 200) {
         var json = jsonDecode(response.body);
         return Playlist.fromJson(json);
@@ -207,12 +200,26 @@ class Connector {
     }
   }
 
-  static void changeFavoriteListFromId(int id) {
-    http.post(Uri.parse('$baseUrl/changeFavoriteListFromId.php?id=$id'),
-        );
+  static void changeFavoriteListFromId(int id)async{
+    var response =await http.post(
+      Uri.parse('$baseUrl/changeFavoriteListFromId.php?id=$id'),
+    );
+
+    if(response.statusCode==200){
+      print("Favorite list changed");
+    }else{
+      print("Error changing favorite list");
+    }
+
   }
 
-  static void deletePlaylist(int id) {
-    http.post(Uri.parse('$baseUrl/deletePlaylist.php?id=$id'));
+  static void deletePlaylist(int id)async {
+    var response =await http.post(Uri.parse('$baseUrl/deletePlaylist.php?idPlaylist=$id'));
+
+    if(response.statusCode==200){
+      print("Playlist deleted");
+    }else{
+      print("Error deleting playlist");
+    }
   }
 }
