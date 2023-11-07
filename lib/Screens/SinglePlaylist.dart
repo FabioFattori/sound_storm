@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sound_storm/Components/CustonContainer.dart';
+import 'package:sound_storm/Components/ImageFromPhp.dart';
 import 'package:sound_storm/Models/Playlist.dart';
 
 class SinglePlaylist extends StatelessWidget {
@@ -42,15 +43,7 @@ class SinglePlaylist extends StatelessWidget {
                 child: SizedBox.fromSize(
                   size: const Size.fromRadius(100), // Image radius
                   child: playlist.getImageWeb() != null
-                      ? kIsWeb
-                          ? Image.network(
-                              playlist.getImageWeb(),
-                              fit: BoxFit.cover,
-                            )
-                          : Image.file(
-                              playlist.image!,
-                              fit: BoxFit.cover,
-                            )
+                      ?  ImageFromPhp(song: playlist.songs[0])
                       : const Image(
                           image: AssetImage("images/default.jpg"),
                         ),

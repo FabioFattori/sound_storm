@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:sound_storm/Components/ImageFromPhp.dart';
 import 'package:sound_storm/Models/PositionData.dart';
 import 'package:sound_storm/Models/Song.dart';
 
@@ -16,7 +18,9 @@ class BottomBar extends StatefulWidget {
       required this.currentSong,
       required this.getDuration,
       required this.setDurationSong,
-      required this.player, this.skipNext,this.skipPrevious});
+      required this.player,
+      this.skipNext,
+      this.skipPrevious});
   late bool isPlaying;
   late Function? skipPrevious;
   late Function? skipNext;
@@ -70,96 +74,82 @@ class _BottomBarState extends State<BottomBar> {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          
-              Center(
-                child: ClipRRect(
-                borderRadius: BorderRadius.circular(20), // Image border
-                child: SizedBox.fromSize(
-                  // Image radius
-                  child: widget.currentSong.image != null
-                      ? kIsWeb
-                    ? Image.network(
-                        widget.currentSong.getUrlToImage(),
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      )
-                    : Image.file(
-                        widget.currentSong.image!,
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      )
-                      : const Image(
-                          image: AssetImage(
-                            "images/default.jpg",
-                          ),
-                          width: 100,
-                          height: 100,
-                        ),
-                ),
+          Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20), // Image border
+              child: SizedBox.fromSize(
+                // Image radius
+                child: 
+                        ImageFromPhp(song: widget.currentSong)
+                        
               ),
+            ),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Text(
+                widget.currentSong.title,
+                style: const TextStyle(color: Colors.white, fontSize: 20),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
+              Row(
                 children: [
-                   Text(
-                        widget.currentSong.title,
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                  Row(
-                    children: [
-                      IconButton(onPressed: ()=>widget.skipPrevious!(), icon: const Icon(Icons.skip_previous,color: Colors.white,size: 30,)),
-                      IconButton(
-                          onPressed: () {
-                            if (widget.currentSong != Song.noSong()) {
-                              if (widget.isPlaying) {
-                                widget.pauseSong();
-                              } else {
-                                widget.playSong();
-                              }
-                            }
-                          },
-                          icon: widget.isPlaying
-                              ? const Icon(Icons.pause, color: Colors.white,size: 30)
-                              : const Icon(Icons.play_arrow,
-                                  color: Colors.white,size: 30)),
-                      IconButton(onPressed: ()=>widget.skipNext!(), icon: const Icon(Icons.skip_next,color: Colors.white,size: 30)),
-                    ],
-                  ),
-                  StreamBuilder<PositionData>(
-                      stream: widget.durationStream,
-                      builder: (context, snapshot) {
-                        final positionData = snapshot.data;
-                        return SizedBox(
-                          width: 275,
-                          child: ProgressBar(
-                            baseBarColor: Colors.white,
-                            bufferedBarColor:
-                                const Color.fromRGBO(61, 61, 61, 1),
-                            progressBarColor:
-                                const Color.fromRGBO(50, 123, 234, 1),
-                            thumbColor: const Color.fromRGBO(50, 123, 234, 1),
-                            thumbGlowColor:
-                                const Color.fromRGBO(50, 124, 234, 0.521),
-                            timeLabelTextStyle:
-                                const TextStyle(color: Colors.white),
-                            progress: positionData?.position ?? Duration.zero,
-                            buffered:
-                                positionData?.BufferedPosition ?? Duration.zero,
-                            total: positionData?.duration ?? Duration.zero,
-                            onSeek: widget.player.seek,
-                          ),
-                        );
-                      })
+                  IconButton(
+                      onPressed: () => widget.skipPrevious!(),
+                      icon: const Icon(
+                        Icons.skip_previous,
+                        color: Colors.white,
+                        size: 30,
+                      )),
+                  IconButton(
+                      onPressed: () {
+                        if (widget.currentSong != Song.noSong()) {
+                          if (widget.isPlaying) {
+                            widget.pauseSong();
+                          } else {
+                            widget.playSong();
+                          }
+                        }
+                      },
+                      icon: widget.isPlaying
+                          ? const Icon(Icons.pause,
+                              color: Colors.white, size: 30)
+                          : const Icon(Icons.play_arrow,
+                              color: Colors.white, size: 30)),
+                  IconButton(
+                      onPressed: () => widget.skipNext!(),
+                      icon: const Icon(Icons.skip_next,
+                          color: Colors.white, size: 30)),
                 ],
               ),
+              StreamBuilder<PositionData>(
+                  stream: widget.durationStream,
+                  builder: (context, snapshot) {
+                    final positionData = snapshot.data;
+                    return SizedBox(
+                      width: 275,
+                      child: ProgressBar(
+                        baseBarColor: Colors.white,
+                        bufferedBarColor: const Color.fromRGBO(61, 61, 61, 1),
+                        progressBarColor: const Color.fromRGBO(50, 123, 234, 1),
+                        thumbColor: const Color.fromRGBO(50, 123, 234, 1),
+                        thumbGlowColor:
+                            const Color.fromRGBO(50, 124, 234, 0.521),
+                        timeLabelTextStyle:
+                            const TextStyle(color: Colors.white),
+                        progress: positionData?.position ?? Duration.zero,
+                        buffered:
+                            positionData?.BufferedPosition ?? Duration.zero,
+                        total: positionData?.duration ?? Duration.zero,
+                        onSeek: widget.player.seek,
+                      ),
+                    );
+                  })
             ],
           ),
-        
-      
+        ],
+      ),
     );
   }
 }

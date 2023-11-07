@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:sound_storm/Components/ImageFromPhp.dart';
 import 'package:sound_storm/Models/Connector.dart';
 import 'package:sound_storm/Models/Playlist.dart';
 import 'package:sound_storm/Models/argsToPass.dart';
@@ -28,14 +29,16 @@ class _PlaylistState extends State<PlaylistScreen> {
     widget.playlists = Connector.getPlaylists();
 
     Future.delayed(const Duration(seconds: 3), () {
-      dynamic x = widget.playlists;
-        setState(() {
-          widget.playlists = new Future<List<Playlist>>.value([]);
-        });
+      if(mounted){
+        dynamic x = widget.playlists;
+      setState(() {
+        widget.playlists = new Future<List<Playlist>>.value([]);
+      });
 
-        setState(() {
-          widget.playlists = x;
-        });
+      setState(() {
+        widget.playlists = x;
+      });
+      }
     });
   }
 
@@ -119,33 +122,36 @@ class _PlaylistState extends State<PlaylistScreen> {
                                               20), // Image border
                                           child: SizedBox.fromSize(
                                             // Image radius
-                                            child:
-                                                snapshot.data![index].image !=
-                                                        null
-                                                    ? kIsWeb ?
-                                                    Image.network(
-                                                        snapshot
-                                                            .data![index]
+                                            child: snapshot
+                                                        .data![index].image !=
+                                                    null
+                                                ? kIsWeb
+                                                    ? Image.network(
+                                                        snapshot.data![index]
                                                             .getImageWeb(),
                                                         width: 50,
                                                         height: 50,
                                                         fit: BoxFit.cover,
+                                                        headers: {
+                                                          'Access-Control-Allow-Origin':
+                                                              '*',
+                                                          'Access-Control-Allow-Methods':
+                                                              'GET, POST, PATCH, PUT, DELETE, OPTIONS',
+                                                          'Access-Control-Allow-Headers':
+                                                              'Origin, Content-Type, X-Auth-Token'
+                                                        },
                                                       )
-                                                    : Image.file(
-                                                        snapshot
+                                                    : ImageFromPhp(
+                                                        song: snapshot
                                                             .data![index]
-                                                            .image!,
-                                                        width: 50,
-                                                        height: 50,
-                                                        fit: BoxFit.cover,
-                                                      )
-                                                    : const Image(
-                                                        image: AssetImage(
-                                                          "images/default.jpg",
-                                                        ),
-                                                        width: 50,
-                                                        height: 50,
-                                                      ),
+                                                            .songs[0])
+                                                : const Image(
+                                                    image: AssetImage(
+                                                      "images/default.jpg",
+                                                    ),
+                                                    width: 50,
+                                                    height: 50,
+                                                  ),
                                           ),
                                         ),
                                       ),

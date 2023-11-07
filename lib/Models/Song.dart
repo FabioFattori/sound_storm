@@ -1,12 +1,16 @@
 // ignore_for_file: file_names
 
 import 'dart:async';
-import 'dart:io';
+import 'dart:convert';
+import 'dart:html';
+
+import 'dart:html' as html;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:sound_storm/Models/Connector.dart';
 
 class Song {
   String baseUrl = "https://understated-throttl.000webhostapp.com/";
@@ -15,6 +19,7 @@ class Song {
   String title;
   String urlToMp3;
   String urlToImage;
+  late final dynamic imageBytes;
   bool isLiked;
   late File? image = null;
   late AudioSource? urlToMp3Local = null;
@@ -23,7 +28,8 @@ class Song {
       {required this.title,
       required this.urlToMp3,
       required this.urlToImage,
-      required this.id,required this.isLiked}) {
+      required this.id,
+      required this.isLiked}) {
     if (title == "" && urlToMp3 == "" && urlToImage == "") {
       image = null;
     } else {
@@ -32,7 +38,8 @@ class Song {
   }
 
   factory Song.noSong() {
-    return Song(title: "", urlToMp3: "", urlToImage: "", id: -1,isLiked: false);
+    return Song(
+        title: "", urlToMp3: "", urlToImage: "", id: -1, isLiked: false);
   }
 
   factory Song.fromJson(Map<String, dynamic> json) {
@@ -40,7 +47,8 @@ class Song {
         id: json['id'],
         title: json['Titolo'],
         urlToMp3: json['urlToMp3'],
-        urlToImage: json['urlToImage'],isLiked: json['liked'] == 1 ? true : false);
+        urlToImage: json['urlToImage'],
+        isLiked: json['liked'] == 1 ? true : false);
   }
 
   factory Song.fromStrangeJson(Map<String, dynamic> json) {
@@ -49,14 +57,14 @@ class Song {
         urlToMp3: json['song'],
         urlToImage: json['img'],
         id: json['id'],
-        isLiked: json['liked'] == 1 ? true : false);
+        isLiked: json['isLiked'] == 1 ? true : false);
   }
 
-  String getUrlToImage(){
+  String getUrlToImage() {
     return '$baseUrl$urlToImage';
   }
 
-  String getUrlToMp3(){
+  String getUrlToMp3() {
     return '$baseUrl$urlToMp3';
   }
 
@@ -68,7 +76,7 @@ class Song {
               id: '1',
               title: title,
               album: playlist,
-              artUri: Uri.parse((await getImageFile()).path)));
+              artUri: Uri.https('$baseUrl$urlToImage')));
 
       urlToMp3Local = audioSource;
       return audioSource;
@@ -76,14 +84,16 @@ class Song {
       return urlToMp3Local!;
     }
   }
+  
 
   Future<AudioSource> getMp3File() async {
     if (urlToMp3Local == null) {
       String url = '$baseUrl$urlToMp3';
       Uri uri = Uri.parse('$baseUrl$urlToImage');
-      if(kIsWeb){
+      if (kIsWeb) {
+        
         urlToMp3Local = AudioSource.uri(Uri.parse(url),
-            tag: MediaItem(id: '1', title: title, artUri: uri));
+            tag: MediaItem(id: '1', title: title, artUri: Uri.parse('https://understated-throttl.000webhostapp.com/getImageForMediaItem.php?titleOfImage=$urlToImage')));
         return urlToMp3Local!;
       }
 
@@ -101,7 +111,7 @@ class Song {
       String url = '$baseUrl$urlToMp3';
       Uri uri = Uri.parse('$baseUrl$urlToImage');
 
-      if(kIsWeb){
+      if (kIsWeb) {
         urlToMp3Local = AudioSource.uri(Uri.parse(url),
             tag: MediaItem(id: '1', title: title, artUri: uri));
         return urlToMp3Local!;
@@ -117,18 +127,14 @@ class Song {
     }
   }
 
-  getImageFile() async {
-    if (image == null) {
-      String url = '$baseUrl$urlToImage';
-      final file = await DefaultCacheManager().getSingleFile(url);
-      image = file;
-
-      return file;
-    } else {
-      return image;
-    }
+  Future<File?> getImageFile() async {
+    return image;
   }
 
+  void setImageFile(File? toSet,dynamic imageBytes) {
+    image = toSet;
+    this.imageBytes = imageBytes;
+  }
 
   @override
   String toString() {

@@ -4,7 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'dart:io';
+import 'dart:html';
 // ignore: depend_on_referenced_packages
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
@@ -222,4 +222,15 @@ class Connector {
       print("Error deleting playlist");
     }
   }
+/*
+  static Future<Image?> getImage(String urlToImage) async{
+    var response = await http.get(Uri.parse('$baseUrl/getImage.php?titleOfImage=$urlToImage'));
+
+    if(response.statusCode==200){
+      return Image.memory(response.bodyBytes);
+    }else{
+      return null;
+    }
+  }
+  */
 }

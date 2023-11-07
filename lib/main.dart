@@ -231,7 +231,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Sound Storm',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromRGBO(25, 20, 20, 1)),
         useMaterial3: true,
       ),
       home: Home(

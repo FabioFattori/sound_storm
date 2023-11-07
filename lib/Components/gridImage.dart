@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:sound_storm/Components/ImageFromPhp.dart';
 import 'package:sound_storm/Models/Song.dart';
 
 class gridImage extends StatefulWidget {
@@ -31,19 +34,7 @@ class _gridImageState extends State<gridImage> {
         child: SizedBox.fromSize(
           // Image radius
           child: widget.song.image != null
-              ? kIsWeb
-                    ? Image.network(
-                        widget.song.getUrlToImage(),
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      )
-                    : Image.file(
-                        widget.song.image!,
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      )
+              ? ImageFromPhp(song: widget.song)
               : const Image(
                   image: AssetImage(
                     "images/default.jpg",

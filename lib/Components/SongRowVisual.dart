@@ -1,9 +1,10 @@
 // ignore_for_file: file_names
 
-import 'dart:io';
+import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:sound_storm/Components/CustonContainer.dart';
+import 'package:sound_storm/Components/ImageFromPhp.dart';
 import 'package:sound_storm/Models/Connector.dart';
 import 'package:sound_storm/Models/Song.dart';
 import 'package:flutter/foundation.dart';
@@ -54,27 +55,8 @@ class _SongRowVisualState extends State<SongRowVisual> {
           borderRadius: BorderRadius.circular(20), // Image border
           child: SizedBox.fromSize(
             // Image radius
-            child: widget.image != null
-                ? kIsWeb
-                    ? Image.network(
-                        widget.song.getUrlToImage(),
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      )
-                    : Image.file(
-                        widget.image!,
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      )
-                : const Image(
-                    image: AssetImage(
-                      "images/default.jpg",
-                    ),
-                    width: 100,
-                    height: 100,
-                  ),
+            child:  ImageFromPhp(song: widget.song)
+                
           ),
         ),
         SizedBox(
@@ -94,12 +76,10 @@ class _SongRowVisualState extends State<SongRowVisual> {
                 if (widget.clicked) {
                   widget.pauseSong();
                 } else {
-                  
-                    await widget.song.getMp3File().then((value) => {
-                          widget.playSong(value),
-                          widget.setSong(widget.song),
-                        });
-                  
+                  await widget.song.getMp3File().then((value) => {
+                        widget.playSong(value),
+                        widget.setSong(widget.song),
+                      });
                 }
                 if (mounted) {
                   setState(() {
